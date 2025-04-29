@@ -7,7 +7,7 @@
 #include <sstream>
 #include <map>
 
-using Graph = std::vector<std::vector<int>>;
+using GraphData = std::vector<std::vector<int>>;
 
 enum class GraphType {
   kUnweightedUndirected,
@@ -20,14 +20,15 @@ class s21_graph {
  public:
   void LoadFromFile(std::string& filename);
   void ExportToDot(std::string& filename);
+  void PrintGraph() const;
 
   int Size() const;
   GraphType GetType() const;
-  Graph Get() const;
+  GraphData Get() const;
 
  private:
-  Graph graph_;
+  GraphData graph_;
   GraphType graph_type_;
 
-  void ParseType(const Graph& graph);
+  void ParseType();
 };

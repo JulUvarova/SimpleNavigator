@@ -2,7 +2,34 @@
 
 void s21_graph::LoadFromFile(std::string& filename) {
   // loading a graph from a file in the adjacency matrix format.
-  throw std::logic_error("Не удалось загрузить граф из файла!");
+  std::ifstream file(filename);
+  if (!file.is_open()) {
+    throw std::logic_error("Не удалось открыть файл!");
+  }
+  std::string line;
+  while (std::getline(file, line)) {
+    std::istringstream iss(line);
+    std::vector<int> row;
+    std::string cell;
+    while (std::getline(iss, cell, ' ')) {
+      if (cell.empty()) {
+        continue;
+      }
+      int value = std::stoi(cell);
+      if (value < 0) {
+        throw std::logic_error("Вес ребра не может быть отрицательным!");
+      }
+      row.push_back(value);
+    }
+    graph_.push_back(row);
+  }
+  file.close();
+
+  if (graph_.size() != graph_[0].size()) {
+    throw std::logic_error("Граф не является квадратной матрицей!");
+  }
+
+  ParseType();
 }
 
 void s21_graph::ExportToDot(std::string& filename) {
@@ -11,6 +38,66 @@ void s21_graph::ExportToDot(std::string& filename) {
 }
 
 int s21_graph::Size() const {
-  // TODO
-  return 0;
+  return graph_.size();
+}
+
+void s21_graph::ParseType() {
+  bool is_weighted = false;
+  bool is_directed = false;
+
+  for (const auto& row : graph_) {
+    for (const auto& cell : row) {
+      if (cell > 1 ) {
+        is_weighted = true;
+      }
+    }
+  }
+
+  for (size_t i = 0; i < graph_.size(); ++i) {
+    for (size_t j = 0; j < graph_[i].size(); ++j) {
+      if (graph_[i][j] != graph_[j][i]) {
+        is_directed = true;
+      }
+    }
+  }
+
+  if (is_weighted && is_directed) {
+    graph_type_ = GraphType::kWeigtedDirected;
+  } else if (is_weighted) {
+    graph_type_ = GraphType::kWeightedUndirected;
+  } else if (is_directed) {
+    graph_type_ = GraphType::kUnweightedDirected;
+  } else {
+    graph_type_ = GraphType::kUnweightedUndirected;
+  }
+}
+
+GraphType s21_graph::GetType() const {
+  return graph_type_;
+}
+
+void s21_graph::PrintGraph() const {
+  std::cout << "Тип графа: ";
+  switch (graph_type_) {
+    case GraphType::kUnweightedUndirected:
+      std::cout << "Неориентированный, невзвешенный";
+      break;
+    case GraphType::kUnweightedDirected:
+      std::cout << "Ориентированный, невзвешенный";
+      break;
+    case GraphType::kWeightedUndirected:
+      std::cout << "Неориентированный, взвешенный";
+      break;
+    case GraphType::kWeigtedDirected:
+      std::cout << "Ориентированный, взвешенный";
+      break;
+  }
+  std::cout << std::endl;
+  std::cout << "Граф:" << std::endl;
+  for (const auto& row : graph_) {
+    for (const auto& cell : row) {
+      std::cout << cell << " ";
+    }
+    std::cout << std::endl;
+  }
 }

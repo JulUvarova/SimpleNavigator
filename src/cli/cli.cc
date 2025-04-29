@@ -163,10 +163,10 @@ void CLInterface::LoadGraphFromFile() {
   std::cin >> filename;
   // filename.trim();
   try {
-    graph_.LoadGraphFromFile(filename);
-    // TODO
+    graph_.LoadFromFile(filename);
     is_graph_loaded_ = true;
     PrintInput("Граф успешно загружен");
+    graph_.PrintGraph();
   } catch (std::exception& e) {
     is_graph_loaded_ = false;
     PrintWarning(e.what());
