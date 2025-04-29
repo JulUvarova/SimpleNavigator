@@ -23,7 +23,7 @@ class CLInterface {
   void ShortestPathBetweenVertices();
   void DFS();
   void BFS();
-  void LoadGraphFromFile();
+  void LoadGraphFromFile(std::string& filename);
   void PrintMenu() const;
   bool CheckGraph() const;
   bool ValidateVertex(int vertex) const;
