@@ -1,13 +1,15 @@
 #include <stdexcept>
 
-#include <vector>
+// #include <vector>
 #include <string>
 #include <iostream>
 #include <fstream>
 #include <sstream>
 #include <map>
 
-using GraphData = std::vector<std::vector<int>>;
+#include "../containers/s21_vector.h"
+
+using GraphData = s21::vector<s21::vector<int>>;
 
 enum class GraphType {
   kUnweightedUndirected,

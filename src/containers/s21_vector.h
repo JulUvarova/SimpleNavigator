@@ -113,9 +113,11 @@ class vector {
 
   // returns an iterator to the beginning
   iterator begin() { return &data_[0]; }
+  const_iterator begin() const { return &data_[0]; }
 
   // returns an iterator to the end
   iterator end() { return &data_[size_]; }
+  const_iterator end() const { return &data_[size_]; }
 
   // checks whether the container is empty
   bool empty() { return !(bool)size_; }

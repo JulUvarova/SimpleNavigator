@@ -9,7 +9,7 @@ void s21_graph::LoadFromFile(std::string& filename) {
   std::string line;
   while (std::getline(file, line)) {
     std::istringstream iss(line);
-    std::vector<int> row;
+    s21::vector<int> row;
     std::string cell;
     while (std::getline(iss, cell, ' ')) {
       if (cell.empty()) {
