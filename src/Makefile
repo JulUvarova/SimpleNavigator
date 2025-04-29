@@ -1,8 +1,32 @@
 # Dependencies: gtest, lcov, (?)doxygen
 
+# googletest on windows
+# git clone https://github.com/google/googletest.git external/googletest
+# cd external/googletest
+# mkdir build
+# cd build
+# cmake .. -G "MinGW Makefiles"
+# mingw32-make
+
 CXX = g++
-CXXFLAGS = -std=c++20 -I./
-LDFLAGS = -lgtest -lgtest_main -pthread
+
+# Base flags
+BASE_CXXFLAGS = -std=c++20 -I./
+BASE_LDFLAGS = -pthread
+
+# OS-specific flags
+ifeq ($(OS), Windows_NT)
+    # Windows (MinGW/MSYS2)
+    GTEST_INC = -I./external/googletest/googletest/include
+    GTEST_LIB = -L./external/googletest/build/lib
+    CXXFLAGS = $(BASE_CXXFLAGS) $(GTEST_INC)
+    LDFLAGS = $(BASE_LDFLAGS) $(GTEST_LIB) -lgtest -lgtest_main
+else
+    # Assume Linux/Unix
+    CXXFLAGS = $(BASE_CXXFLAGS)
+    LDFLAGS = $(BASE_LDFLAGS) -lgtest -lgtest_main
+endif
+
 GCOV_FLAGS = --coverage -lsubunit -lgcov
 CPPCHECK_FLAGS = --enable=all --suppress=missingIncludeSystem --language=c++ \
 				 --quiet --suppress=unusedFunction --suppress=unusedStructMember \
