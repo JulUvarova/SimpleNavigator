@@ -114,7 +114,8 @@ void CLInterface::ShortestPathBetweenVertices() {
   try {
     std::cout << "РЕАЛИЗОВАТЬ ПОИСК КРАТЧАЙШЕГО МЕЖДУ " << src << " и " << dest
               << std::endl;
-    s21_graph_algorithms::GetShortestPathBetweenVertices(graph_, src, dest);
+    s21_graph_algorithms::GetShortestPathBetweenVertices(graph_, src - 1,
+                                                         dest - 1);
     // TODO
   } catch (std::exception& e) {
     PrintWarning(e.what());
@@ -131,8 +132,8 @@ void CLInterface::DFS() {
   if (!ValidateVertex(start)) return;
 
   try {
-    s21::vector res = s21_graph_algorithms::DepthFirstSearch(graph_, start);
-    for (auto elem : res) std::cout << elem << " ";
+    s21::vector res = s21_graph_algorithms::DepthFirstSearch(graph_, start - 1);
+    for (auto elem : res) std::cout << elem + 1 << " ";
     std::cout << std::endl;
   } catch (std::exception& e) {
     PrintWarning(e.what());
@@ -149,8 +150,9 @@ void CLInterface::BFS() {
   if (!ValidateVertex(start)) return;
 
   try {
-    s21::vector res = s21_graph_algorithms::BreadthFirstSearch(graph_, start);
-    for (auto elem : res) std::cout << elem << " ";
+    s21::vector res =
+        s21_graph_algorithms::BreadthFirstSearch(graph_, start - 1);
+    for (auto elem : res) std::cout << elem + 1 << " ";
     std::cout << std::endl;
   } catch (std::exception& e) {
     PrintWarning(e.what());
@@ -203,7 +205,7 @@ bool CLInterface::CheckGraph() const {
 }
 
 bool CLInterface::ValidateVertex(int vertex) const {
-  if (vertex < 0 || vertex >= graph_.Size()) {
+  if (vertex < 1 || vertex > graph_.Size()) {
     PrintWarning("Неверный номер вершины");
     return false;
   }
