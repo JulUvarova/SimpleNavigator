@@ -112,11 +112,12 @@ void CLInterface::ShortestPathBetweenVertices() {
   if (!ValidateVertex(dest)) return;
 
   try {
-    std::cout << "РЕАЛИЗОВАТЬ ПОИСК КРАТЧАЙШЕГО МЕЖДУ " << src << " и " << dest
-              << std::endl;
-    s21_graph_algorithms::GetShortestPathBetweenVertices(graph_, src - 1,
-                                                         dest - 1);
-    // TODO
+    auto [x, path] = s21_graph_algorithms::GetShortestPathBetweenVertices(
+        graph_, src - 1, dest - 1);
+    std::cout << "Длина кратчайшего пути: " << x << std::endl;
+    std::cout << "Путь: ";
+    for (auto elem : path) std::cout << elem + 1 << " ";
+    std::cout << std::endl;
   } catch (std::exception& e) {
     PrintWarning(e.what());
   }

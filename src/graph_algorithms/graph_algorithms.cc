@@ -65,13 +65,57 @@ s21::vector<int> s21_graph_algorithms::BreadthFirstSearch(s21_graph& graph,
   return path;
 }
 
-void s21_graph_algorithms::GetShortestPathBetweenVertices(s21_graph& graph,
-                                                          int vertex1,
-                                                          int vertex2) {
-  // searching for the shortest path between two vertices in a graph using
-  // Dijkstra's algorithm. The function accepts as input the numbers of two
-  // vertices and returns a numerical result equal to the smallest distance
-  // between them.
+std::pair<int, s21::vector<int>>
+s21_graph_algorithms::GetShortestPathBetweenVertices(s21_graph& graph,
+                                                     int start, int finish) {
+  s21::vector<int> path;
+  if (!CheckVertex(graph, start) || !CheckVertex(graph, finish)) {
+    return {0, path};  // !или кидать ошибку?
+  }
+
+  s21::vector<int> distance;
+  s21::vector<int> previous;
+  s21::queue<int> queue;
+  s21::vector<bool> visited;
+  int max = std::numeric_limits<int>::max();
+  for (int i = 0; i < graph.Size(); ++i) {
+    distance.push_back(max);
+    previous.push_back(-1);
+    visited.push_back(false);
+  }
+  distance[start] = 0;
+  previous[start] = start;
+  queue.push(start);
+  visited[start] = true;
+
+  while (!queue.empty()) {
+    int curr = queue.front();
+    queue.pop();
+
+    for (int i = 0; i < graph.Size(); ++i) {
+      if (graph(curr, i) > 0) {
+        if (!visited[i]) {
+          queue.push(i);
+          visited[i] = true;
+        }
+        if (distance[curr] + graph(curr, i) < distance[i]) {
+          distance[i] = distance[curr] + graph(curr, i);
+          previous[i] = curr;
+        }
+      }
+    }
+  }
+
+  if (distance[finish] == max) return {0, path};  //! not found
+
+  for (int i = finish; i != previous[i]; i = previous[i]) {
+    path.push_back(i);
+  }
+  path.push_back(start);
+
+  std::reverse(path.begin(), path.end());
+
+  return {distance[finish], path};
 }
 
 void s21_graph_algorithms::GetShortestPathsBetweenAllVertices(

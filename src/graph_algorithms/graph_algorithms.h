@@ -1,3 +1,6 @@
+#include <algorithm>
+#include <limits>
+
 #include "../containers/s21_containers.h"
 #include "../graph/graph.h"
 
@@ -13,8 +16,8 @@ class s21_graph_algorithms {
   static s21::vector<int> DepthFirstSearch(s21_graph& graph, int start_vertex);
   static s21::vector<int> BreadthFirstSearch(s21_graph& graph,
                                              int start_vertex);
-  static void GetShortestPathBetweenVertices(s21_graph& graph, int vertex1,
-                                             int vertex2);
+  static std::pair<int, s21::vector<int>> GetShortestPathBetweenVertices(
+      s21_graph& graph, int vertex1, int vertex2);
   static void GetShortestPathsBetweenAllVertices(s21_graph& graph);
   static void GetLeastSpanningTree(s21_graph& graph);
   static TsmResult SolveTravelingSalesmanProblem(s21_graph& graph);
