@@ -6,6 +6,9 @@
 #include <fstream>
 #include <sstream>
 #include <map>
+#include <fstream> 
+#include <stdexcept> 
+#include <string> 
 
 #include "../containers/s21_vector.h"
 

@@ -5,7 +5,7 @@
 # cd external/googletest
 # mkdir build
 # cd build
-# cmake .. -G "MinGW Makefiles"
+# cmake .. -G "MinGW Makefiles" -DCMAKE_MAKE_PROGRAM=C:\msys64\ucrt64\bin\mingw32-make.exe
 # mingw32-make
 
 CXX = g++
