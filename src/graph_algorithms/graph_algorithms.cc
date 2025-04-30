@@ -69,8 +69,9 @@ std::pair<int, s21::vector<int>>
 s21_graph_algorithms::GetShortestPathBetweenVertices(s21_graph& graph,
                                                      int start, int finish) {
   s21::vector<int> path;
-  if (!CheckVertex(graph, start) || !CheckVertex(graph, finish)) {
-    return {0, path};  // !или кидать ошибку?
+  if (!CheckVertex(graph, start) || !CheckVertex(graph, finish) ||
+      start == finish) {
+    return {-1, path};  // !или кидать ошибку?
   }
 
   s21::vector<int> distance;
@@ -93,22 +94,23 @@ s21_graph_algorithms::GetShortestPathBetweenVertices(s21_graph& graph,
     queue.pop();
 
     for (int i = 0; i < graph.Size(); ++i) {
-      if (graph(curr, i) > 0) {
+      int weight = graph(curr, i);
+      if (weight > 0) {
         if (!visited[i]) {
           queue.push(i);
           visited[i] = true;
         }
-        if (distance[curr] + graph(curr, i) < distance[i]) {
-          distance[i] = distance[curr] + graph(curr, i);
+        if (distance[curr] + weight < distance[i]) {
+          distance[i] = distance[curr] + weight;
           previous[i] = curr;
         }
       }
     }
   }
 
-  if (distance[finish] == max) return {0, path};  //! not found
+  if (distance[finish] == max) return {-1, path};  //! not found
 
-  for (int i = finish; i != previous[i]; i = previous[i]) {
+  for (int i = finish; i != previous[i] && previous[i] != -1; i = previous[i]) {
     path.push_back(i);
   }
   path.push_back(start);

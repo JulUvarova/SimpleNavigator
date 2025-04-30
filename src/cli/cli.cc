@@ -114,6 +114,11 @@ void CLInterface::ShortestPathBetweenVertices() {
   try {
     auto [x, path] = s21_graph_algorithms::GetShortestPathBetweenVertices(
         graph_, src - 1, dest - 1);
+    if (x == -1) {
+      std::cout << "Пути между вершинами " << src << " и " << dest
+                << " не существует" << std::endl;
+      return;
+    }
     std::cout << "Длина кратчайшего пути: " << x << std::endl;
     std::cout << "Путь: ";
     for (auto elem : path) std::cout << elem + 1 << " ";
