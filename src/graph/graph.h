@@ -27,6 +27,9 @@ class s21_graph {
   int Size() const;
   GraphType GetType() const;
   GraphData Get() const;
+  const int operator()(const int i, const int j) {
+     return graph_[i][j];
+  }
 
  private:
   GraphData graph_;
