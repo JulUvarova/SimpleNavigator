@@ -3,10 +3,14 @@
 s21::vector<int> s21_graph_algorithms::DepthFirstSearch(s21_graph& graph,
                                                         int start_vertex) {
   s21::stack<int> stack;
-  s21::vector<int> visited;
+  s21::vector<int> path;
+  s21::vector<bool> visited;
+  for (int i = 0; i < graph.Size(); ++i) {
+    visited.push_back(false);
+  }
 
   if (start_vertex < 0 || start_vertex >= graph.Size()) {
-    return visited;  // !или кидать ошибку?
+    return path;  // !или кидать ошибку?
   }
   stack.push(start_vertex);
 
@@ -14,19 +18,18 @@ s21::vector<int> s21_graph_algorithms::DepthFirstSearch(s21_graph& graph,
     int curr = stack.top();
     stack.pop();
 
-    if (std::find(visited.begin(), visited.end(), curr) != visited.end())
-      continue;
-    visited.push_back(curr);
+    if (visited[curr]) continue;
+    path.push_back(curr);
+    visited[curr] = true;
 
-    for (int i = graph.Size() - 1; i >= 0; --i) {  //! с конца красивее
+    for (int i = graph.Size() - 1; i >= 0; --i) { 
       // for (int i = 0; i < graph.Size(); ++i) {
-      if (graph(curr, i) > 0) {
-        if (std::find(visited.begin(), visited.end(), i) == visited.end())
-          stack.push(i);
+      if (graph(curr, i) > 0 && !visited[i]) {
+        stack.push(i);
       }
     }
   }
-  return visited;
+  return path;
 }
 
 void s21_graph_algorithms::BreadthFirstSearch(s21_graph& graph,

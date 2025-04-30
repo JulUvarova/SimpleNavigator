@@ -165,7 +165,9 @@ void CLInterface::LoadGraphFromFile() {
   std::cin >> filename;
   // filename.trim();
   try {
-    graph_.LoadFromFile(filename);
+    s21_graph new_graph;
+    new_graph.LoadFromFile(filename);
+    graph_ = std::move(new_graph);
     is_graph_loaded_ = true;
     PrintInput("Граф успешно загружен");
     graph_.PrintGraph();
@@ -200,7 +202,7 @@ bool CLInterface::CheckGraph() const {
 }
 
 bool CLInterface::ValidateVertex(int vertex) const {
-  if (vertex < 1 || vertex > graph_.Size()) {
+  if (vertex < 0 || vertex >= graph_.Size()) {
     PrintWarning("Неверный номер вершины");
     return false;
   }
