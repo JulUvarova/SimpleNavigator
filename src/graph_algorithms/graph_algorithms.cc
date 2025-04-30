@@ -2,16 +2,17 @@
 
 s21::vector<int> s21_graph_algorithms::DepthFirstSearch(s21_graph& graph,
                                                         int start_vertex) {
-  s21::stack<int> stack;
   s21::vector<int> path;
+  if (!CheckVertex(graph, start_vertex)) {
+    return path;  // !или кидать ошибку?
+  }
+
+  s21::stack<int> stack;
   s21::vector<bool> visited;
   for (int i = 0; i < graph.Size(); ++i) {
     visited.push_back(false);
   }
 
-  if (start_vertex < 0 || start_vertex >= graph.Size()) {
-    return path;  // !или кидать ошибку?
-  }
   stack.push(start_vertex);
 
   while (!stack.empty()) {
@@ -22,7 +23,7 @@ s21::vector<int> s21_graph_algorithms::DepthFirstSearch(s21_graph& graph,
     path.push_back(curr);
     visited[curr] = true;
 
-    for (int i = graph.Size() - 1; i >= 0; --i) { 
+    for (int i = graph.Size() - 1; i >= 0; --i) {
       // for (int i = 0; i < graph.Size(); ++i) {
       if (graph(curr, i) > 0 && !visited[i]) {
         stack.push(i);
@@ -32,13 +33,36 @@ s21::vector<int> s21_graph_algorithms::DepthFirstSearch(s21_graph& graph,
   return path;
 }
 
-void s21_graph_algorithms::BreadthFirstSearch(s21_graph& graph,
-                                              int start_vertex) {
-  // breadth-first search in the graph from a given vertex. The function
-  // should return an array that contains the traversed vertices in the
-  // order they were traversed. When implementing this function, you must
-  // use the self-written data structure queue, which should be previously
-  // made as a separate static library.
+s21::vector<int> s21_graph_algorithms::BreadthFirstSearch(s21_graph& graph,
+                                                          int start_vertex) {
+  s21::vector<int> path;
+  if (!CheckVertex(graph, start_vertex)) {
+    return path;  // !или кидать ошибку?
+  }
+
+  s21::queue<int> queue;
+  s21::vector<bool> visited;
+  for (int i = 0; i < graph.Size(); ++i) {
+    visited.push_back(0);
+  }
+
+  queue.push(start_vertex);
+  visited[start_vertex] = true;
+
+  while (!queue.empty()) {
+    int curr = queue.front();
+    queue.pop();
+    path.push_back(curr);
+
+    for (int i = 0; i < graph.Size(); ++i) {
+      if (graph(curr, i) > 0 && !visited[i]) {
+        queue.push(i);
+        visited[i] = true;
+      }
+    }
+  }
+  //! поверка на несвязность? По условию графы связные дб
+  return path;
 }
 
 void s21_graph_algorithms::GetShortestPathBetweenVertices(s21_graph& graph,
@@ -89,4 +113,9 @@ void s21_graph_algorithms::AnalyzeTSPAlgorithms(s21_graph& graph) {
   // Example: For N = 1000 it will measure how long it will take to solve
   // the traveling salesman problem 1000 times for the current given graph
   // by an ant colony algorithm and two randomly chosen algorithms.
+}
+
+bool s21_graph_algorithms::CheckVertex(s21_graph& graph, int vertex) {
+  if (vertex < 0 || vertex >= graph.Size()) return false;
+  return true;
 }

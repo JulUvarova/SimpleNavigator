@@ -1,5 +1,5 @@
-#include "../graph/graph.h"
 #include "../containers/s21_containers.h"
+#include "../graph/graph.h"
 
 struct TsmResult {
   int* vertices;    // an array with the route you are looking for (with the
@@ -11,11 +11,15 @@ struct TsmResult {
 class s21_graph_algorithms {
  public:
   static s21::vector<int> DepthFirstSearch(s21_graph& graph, int start_vertex);
-  static void BreadthFirstSearch(s21_graph& graph, int start_vertex);
+  static s21::vector<int> BreadthFirstSearch(s21_graph& graph,
+                                             int start_vertex);
   static void GetShortestPathBetweenVertices(s21_graph& graph, int vertex1,
                                              int vertex2);
   static void GetShortestPathsBetweenAllVertices(s21_graph& graph);
   static void GetLeastSpanningTree(s21_graph& graph);
   static TsmResult SolveTravelingSalesmanProblem(s21_graph& graph);
   static void AnalyzeTSPAlgorithms(s21_graph& graph);
+
+ private:
+  static bool CheckVertex(s21_graph& graph, int vertex);
 };

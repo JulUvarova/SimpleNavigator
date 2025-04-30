@@ -131,8 +131,6 @@ void CLInterface::DFS() {
   if (!ValidateVertex(start)) return;
 
   try {
-    graph_.PrintGraph();
-    std::cout << "РЕАЛИЗОВАТЬ ОБХОД В ГЛУБИНУ вершина " << start << std::endl;
     s21::vector res = s21_graph_algorithms::DepthFirstSearch(graph_, start);
     for (auto elem : res) std::cout << elem << " ";
     std::cout << std::endl;
@@ -151,9 +149,9 @@ void CLInterface::BFS() {
   if (!ValidateVertex(start)) return;
 
   try {
-    std::cout << "РЕАЛИЗОВАТЬ ОБХОД В ШИРИНУ вершина " << start << std::endl;
-    s21_graph_algorithms::BreadthFirstSearch(graph_, start);
-    // TODO
+    s21::vector res = s21_graph_algorithms::BreadthFirstSearch(graph_, start);
+    for (auto elem : res) std::cout << elem << " ";
+    std::cout << std::endl;
   } catch (std::exception& e) {
     PrintWarning(e.what());
   }

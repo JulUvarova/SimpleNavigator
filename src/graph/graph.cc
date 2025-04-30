@@ -1,5 +1,4 @@
 #include "graph.h"
- 
 
 void s21_graph::LoadFromFile(std::string& filename) {
   // loading a graph from a file in the adjacency matrix format.
@@ -47,17 +46,19 @@ void s21_graph::ExportToDot(std::string& filename) {
   std::string edge_connector = is_directed ? " -> " : " -- ";
 
   file << (is_directed ? "digraph" : "graph") << " G {" << std::endl;
-  file << "  node [shape = circle];" << std::endl; // Optional: Consistent node shape
+  file << "  node [shape = circle];"
+       << std::endl;  // Optional: Consistent node shape
 
   int size = Size();
   for (int i = 0; i < size; ++i) {
-    // For undirected graphs, only iterate j from i to avoid duplicate edges (like 1--2 and 2--1)
+    // For undirected graphs, only iterate j from i to avoid duplicate edges
+    // (like 1--2 and 2--1)
     for (int j = (is_directed ? 0 : i); j < size; ++j) {
       // Check if an edge exists
       if (graph_[i][j] > 0) {
-         // Write the edge connection (e.g., "1 -> 2" or "1 -- 2")
+        // Write the edge connection (e.g., "1 -> 2" or "1 -- 2")
         file << "  " << (i + 1) << edge_connector << (j + 1);
-         // Add weight label if the graph is weighted
+        // Add weight label if the graph is weighted
         if (is_weighted) {
           file << " [label=\"" << graph_[i][j] << "\"]";
         }
@@ -70,9 +71,7 @@ void s21_graph::ExportToDot(std::string& filename) {
   file.close();
 }
 
-int s21_graph::Size() const {
-  return graph_.size();
-}
+int s21_graph::Size() const { return graph_.size(); }
 
 void s21_graph::ParseType() {
   bool is_weighted = false;
@@ -80,7 +79,7 @@ void s21_graph::ParseType() {
 
   for (const auto& row : graph_) {
     for (const auto& cell : row) {
-      if (cell > 1 ) {
+      if (cell > 1) {
         is_weighted = true;
       }
     }
@@ -105,9 +104,7 @@ void s21_graph::ParseType() {
   }
 }
 
-GraphType s21_graph::GetType() const {
-  return graph_type_;
-}
+GraphType s21_graph::GetType() const { return graph_type_; }
 
 void s21_graph::PrintGraph() const {
   std::cout << "Тип графа: ";

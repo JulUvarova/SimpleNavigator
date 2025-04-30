@@ -1,14 +1,12 @@
 #include <stdexcept>
 
 // #include <vector>
-#include <string>
-#include <iostream>
 #include <fstream>
-#include <sstream>
+#include <iostream>
 #include <map>
-#include <fstream> 
-#include <stdexcept> 
-#include <string> 
+#include <sstream>
+#include <stdexcept>
+#include <string>
 
 #include "../containers/s21_vector.h"
 
@@ -30,9 +28,7 @@ class s21_graph {
   int Size() const;
   GraphType GetType() const;
   GraphData Get() const;
-  const int operator()(const int i, const int j) {
-     return graph_[i][j];
-  }
+  const int operator()(const int i, const int j) { return graph_[i][j]; }
 
  private:
   GraphData graph_;
