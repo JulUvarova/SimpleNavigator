@@ -167,6 +167,9 @@ void CLInterface::LoadGraphFromFile() {
     is_graph_loaded_ = true;
     PrintInput("Граф успешно загружен");
     graph_.PrintGraph();
+
+    std::string dot_filename = filename + ".dot";
+    graph_.ExportToDot(dot_filename);
   } catch (std::exception& e) {
     is_graph_loaded_ = false;
     PrintWarning(e.what());

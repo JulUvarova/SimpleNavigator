@@ -1,4 +1,5 @@
 #include "graph.h"
+ 
 
 void s21_graph::LoadFromFile(std::string& filename) {
   // loading a graph from a file in the adjacency matrix format.
@@ -34,7 +35,39 @@ void s21_graph::LoadFromFile(std::string& filename) {
 
 void s21_graph::ExportToDot(std::string& filename) {
   //  exporting a graph to a dot file (see materials)
-  throw std::logic_error("Не удалось загрузить граф в файл!");
+  std::ofstream file(filename);
+  if (!file.is_open()) {
+    throw std::runtime_error("Unable to open file for writing: " + filename);
+  }
+
+  bool is_directed = (graph_type_ == GraphType::kUnweightedDirected ||
+                      graph_type_ == GraphType::kWeigtedDirected);
+  bool is_weighted = (graph_type_ == GraphType::kWeightedUndirected ||
+                      graph_type_ == GraphType::kWeigtedDirected);
+  std::string edge_connector = is_directed ? " -> " : " -- ";
+
+  file << (is_directed ? "digraph" : "graph") << " G {" << std::endl;
+  file << "  node [shape = circle];" << std::endl; // Optional: Consistent node shape
+
+  int size = Size();
+  for (int i = 0; i < size; ++i) {
+    // For undirected graphs, only iterate j from i to avoid duplicate edges (like 1--2 and 2--1)
+    for (int j = (is_directed ? 0 : i); j < size; ++j) {
+      // Check if an edge exists
+      if (graph_[i][j] > 0) {
+         // Write the edge connection (e.g., "1 -> 2" or "1 -- 2")
+        file << "  " << (i + 1) << edge_connector << (j + 1);
+         // Add weight label if the graph is weighted
+        if (is_weighted) {
+          file << " [label=\"" << graph_[i][j] << "\"]";
+        }
+        file << ";" << std::endl;
+      }
+    }
+  }
+
+  file << "}" << std::endl;
+  file.close();
 }
 
 int s21_graph::Size() const {
