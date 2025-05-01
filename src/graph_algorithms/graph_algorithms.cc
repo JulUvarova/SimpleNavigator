@@ -1,4 +1,6 @@
 #include "graph_algorithms.h"
+#include "graph_tsm_aco.h"
+#include <stdexcept>
 
 s21::vector<int> s21_graph_algorithms::DepthFirstSearch(s21_graph& graph,
                                                         int start_vertex) {
@@ -136,13 +138,49 @@ void s21_graph_algorithms::GetLeastSpanningTree(s21_graph& graph) {
 
 TsmResult s21_graph_algorithms::SolveTravelingSalesmanProblem(
     s21_graph& graph) {
-  // solving the traveling
-  // salesman's problem using the ant colony algorithm. You need to find the
-  // shortest path that goes through all vertices of the graph at least
-  // once, followed by a return to the original vertex. As a result, the
-  // function should return the TsmResult structure. If it is impossible to
-  // solve the problem with a given graph, output an error.
-  return {};
+  if (graph.Size() <= 1) {
+      // Handle trivial cases or throw an error if a tour needs >1 city
+      if (graph.Size() == 1) {
+           TsmResult result;
+           result.vertices.push_back(0);
+           result.vertices.push_back(0);
+           result.distance = 0.0;
+           return result;
+      } else {
+           throw std::invalid_argument("TSP requires at least one vertex.");
+      }
+  }
+
+  try {
+    // Optionally define custom parameters
+    // s21_aco::AcoParams params;
+    // params.num_ants = 20;
+    // params.num_iterations = 200;
+    // ... set other params ...
+    // s21_aco::AntColonyOptimizer aco_solver(graph, params);
+
+    // Use default parameters
+    s21_aco::AntColonyOptimizer aco_solver(graph);
+
+    // Run the algorithm
+    TsmResult result = aco_solver.Run();
+
+    // The ACO solver already adds the start node at the end.
+    // The TsmResult struct expects std::vector<int>, which we are now using.
+    return result;
+
+  } catch (const std::exception& e) {
+    // Rethrow or handle the exception appropriately
+    // For example, log the error and return a default/error TsmResult
+    std::cerr << "Error solving TSP: " << e.what() << std::endl;
+    // Depending on requirements, either rethrow or return an 'error' state
+    // For now, return an empty/invalid TsmResult to avoid program termination
+    // throw; 
+    TsmResult error_result;
+    error_result.vertices = {}; // Empty vector
+    error_result.distance = std::numeric_limits<double>::infinity();
+    return error_result;
+  }
 }
 
 void s21_graph_algorithms::AnalyzeTSPAlgorithms(s21_graph& graph) {

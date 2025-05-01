@@ -64,10 +64,26 @@ void CLInterface::SalesmanProblem() {
   if (!CheckGraph()) return;
 
   try {
-    std::cout << "РЕАЛИЗОВАТЬ МУРАВЬИНЫЙ АЛГОРИТМ" << std::endl;
-    s21_graph_algorithms::SolveTravelingSalesmanProblem(graph_);
-    // TODO
-  } catch (std::exception& e) {
+    PrintInformation("МУРАВЬИНЫЙ АЛГОРИТМ");
+    TsmResult result = s21_graph_algorithms::SolveTravelingSalesmanProblem(graph_);
+
+    // Print the result
+    if (result.distance != std::numeric_limits<double>::infinity() && !result.vertices.empty()) {
+        PrintInformation("Найденный маршрут (муравьиный алгоритм):");
+        std::string path_str = "";
+        for (size_t i = 0; i < result.vertices.size(); ++i) {
+            path_str += std::to_string(result.vertices[i] + 1);
+            if (i < result.vertices.size() - 1) {
+                path_str += " -> ";
+            }
+        }
+        PrintInformation(path_str);
+        PrintInformation("Длина маршрута: " + std::to_string(static_cast<int>(result.distance)));
+    } else {
+        PrintWarning("Не удалось найти допустимый маршрут коммивояжера.");
+    }
+
+  } catch (const std::exception& e) {
     PrintWarning(e.what());
   }
 }

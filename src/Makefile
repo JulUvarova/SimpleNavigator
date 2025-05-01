@@ -45,7 +45,7 @@ GRAPH_TEST_SRC = graph/graph_test.cc
 TEST_GRAPH_BIN = test_graph
 
 GRAPH_ALGORITHMS_LIB = s21_graph_algorithms.a
-GRAPH_ALGORITHMS_SRC = graph_algorithms/graph_algorithms.cc
+GRAPH_ALGORITHMS_SRC = graph_algorithms/graph_algorithms.cc graph_algorithms/graph_tsm_aco.cc
 GRAPH_ALGORITHMS_TEST_SRC = graph_algorithms/graph_algorithms_test.cc
 TEST_ALG_BIN = test_graph_algorithms
 

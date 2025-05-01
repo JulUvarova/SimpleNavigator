@@ -1,3 +1,4 @@
+#pragma once
 #include <algorithm>
 #include <limits>
 
@@ -5,7 +6,7 @@
 #include "../graph/graph.h"
 
 struct TsmResult {
-  int* vertices;    // an array with the route you are looking for (with the
+  std::vector<int> vertices;    // an array with the route you are looking for (with the
                     // vertex traverse order). Instead of int* you can use
                     // std::vector<int>
   double distance;  // the length of this route
