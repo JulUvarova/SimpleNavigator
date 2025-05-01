@@ -1,6 +1,8 @@
 #include "graph_algorithms.h"
-#include "graph_tsm_aco.h"
+
 #include <stdexcept>
+
+#include "graph_tsm_aco.h"
 
 s21::vector<int> s21_graph_algorithms::DepthFirstSearch(s21_graph& graph,
                                                         int start_vertex) {
@@ -78,7 +80,7 @@ s21_graph_algorithms::GetShortestPathBetweenVertices(s21_graph& graph,
 
   s21::vector<int> distance;
   s21::vector<int> previous;
-  s21::queue<int> queue;
+  s21::queue<int> queue;  // TODO heap?
   s21::vector<bool> visited;
   int max = std::numeric_limits<int>::max();
   for (int i = 0; i < graph.Size(); ++i) {
@@ -122,12 +124,33 @@ s21_graph_algorithms::GetShortestPathBetweenVertices(s21_graph& graph,
   return {distance[finish], path};
 }
 
-void s21_graph_algorithms::GetShortestPathsBetweenAllVertices(
-    s21_graph& graph) {
-  // searching for the shortest paths between all pairs of vertices in a
-  // graph using the Floyd-Warshall algorithm. As a result, the function
-  // returns the matrix of the shortest paths between all vertices of the
-  // graph.
+s21::vector<s21::vector<int>>
+s21_graph_algorithms::GetShortestPathsBetweenAllVertices(s21_graph& graph) {
+  s21::vector<s21::vector<int>> distances;
+  int max = std::numeric_limits<int>::max();
+  for (int i = 0; i < graph.Size(); ++i) {
+    distances.push_back(s21::vector<int>());
+    for (int j = 0; j < graph.Size(); ++j) {
+      if (i == j)
+        distances[i].push_back(0);
+      else if (graph(i, j) == 0)
+        distances[i].push_back(max);
+      else
+        distances[i].push_back(graph(i, j));
+    }
+  }
+
+  for (int k = 0; k < graph.Size(); ++k) {
+    for (int i = 0; i < graph.Size(); ++i) {
+      for (int j = 0; j < graph.Size(); ++j) {
+        if (distances[i][k] < max && distances[k][j] < max) {
+          distances[i][j] =
+              std::min(distances[i][j], distances[i][k] + distances[k][j]);
+        }
+      }
+    }
+  }
+  return distances;
 }
 
 void s21_graph_algorithms::GetLeastSpanningTree(s21_graph& graph) {
@@ -139,16 +162,16 @@ void s21_graph_algorithms::GetLeastSpanningTree(s21_graph& graph) {
 TsmResult s21_graph_algorithms::SolveTravelingSalesmanProblem(
     s21_graph& graph) {
   if (graph.Size() <= 1) {
-      // Handle trivial cases or throw an error if a tour needs >1 city
-      if (graph.Size() == 1) {
-           TsmResult result;
-           result.vertices.push_back(0);
-           result.vertices.push_back(0);
-           result.distance = 0.0;
-           return result;
-      } else {
-           throw std::invalid_argument("TSP requires at least one vertex.");
-      }
+    // Handle trivial cases or throw an error if a tour needs >1 city
+    if (graph.Size() == 1) {
+      TsmResult result;
+      result.vertices.push_back(0);
+      result.vertices.push_back(0);
+      result.distance = 0.0;
+      return result;
+    } else {
+      throw std::invalid_argument("TSP requires at least one vertex.");
+    }
   }
 
   try {
@@ -175,9 +198,9 @@ TsmResult s21_graph_algorithms::SolveTravelingSalesmanProblem(
     std::cerr << "Error solving TSP: " << e.what() << std::endl;
     // Depending on requirements, either rethrow or return an 'error' state
     // For now, return an empty/invalid TsmResult to avoid program termination
-    // throw; 
+    // throw;
     TsmResult error_result;
-    error_result.vertices = {}; // Empty vector
+    error_result.vertices = {};  // Empty vector
     error_result.distance = std::numeric_limits<double>::infinity();
     return error_result;
   }

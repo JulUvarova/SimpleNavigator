@@ -65,22 +65,25 @@ void CLInterface::SalesmanProblem() {
 
   try {
     PrintInformation("МУРАВЬИНЫЙ АЛГОРИТМ");
-    TsmResult result = s21_graph_algorithms::SolveTravelingSalesmanProblem(graph_);
+    TsmResult result =
+        s21_graph_algorithms::SolveTravelingSalesmanProblem(graph_);
 
     // Print the result
-    if (result.distance != std::numeric_limits<double>::infinity() && !result.vertices.empty()) {
-        PrintInformation("Найденный маршрут (муравьиный алгоритм):");
-        std::string path_str = "";
-        for (size_t i = 0; i < result.vertices.size(); ++i) {
-            path_str += std::to_string(result.vertices[i] + 1);
-            if (i < result.vertices.size() - 1) {
-                path_str += " -> ";
-            }
+    if (result.distance != std::numeric_limits<double>::infinity() &&
+        !result.vertices.empty()) {
+      PrintInformation("Найденный маршрут (муравьиный алгоритм):");
+      std::string path_str = "";
+      for (size_t i = 0; i < result.vertices.size(); ++i) {
+        path_str += std::to_string(result.vertices[i] + 1);
+        if (i < result.vertices.size() - 1) {
+          path_str += " -> ";
         }
-        PrintInformation(path_str);
-        PrintInformation("Длина маршрута: " + std::to_string(static_cast<int>(result.distance)));
+      }
+      PrintInformation(path_str);
+      PrintInformation("Длина маршрута: " +
+                       std::to_string(static_cast<int>(result.distance)));
     } else {
-        PrintWarning("Не удалось найти допустимый маршрут коммивояжера.");
+      PrintWarning("Не удалось найти допустимый маршрут коммивояжера.");
     }
 
   } catch (const std::exception& e) {
@@ -104,9 +107,36 @@ void CLInterface::ShortestPathBetweenAllVertices() {
   if (!CheckGraph()) return;
 
   try {
-    std::cout << "РЕАЛИЗОВАТЬ ПОИСК КРАТЧАЙШЕГО МЕЖДУ ВСЕМИ" << std::endl;
-    s21_graph_algorithms::GetShortestPathsBetweenAllVertices(graph_);
-    // TODO
+    s21::vector<s21::vector<int>> res =
+        s21_graph_algorithms::GetShortestPathsBetweenAllVertices(graph_);
+
+    std::cout << "Матрица расстояний с кратчайшими путями между вершинами:"
+              << std::endl;
+    std::cout << std::setw(3) << "   |";
+    for (int i = 0; i < res.size(); ++i) {
+      std::cout << std::setw(3) << i + 1 << "|";
+    }
+    std::cout << std::endl;
+    for (int j = 0; j <= res.size(); ++j) {
+      std::cout << "---+";
+    }
+    std::cout << std::endl;
+    for (int i = 0; i < res.size(); ++i) {
+      std::cout << std::setw(3) << i + 1 << "|";
+      for (int j = 0; j < res[i].size(); ++j) {
+        if (res[i][j] == std::numeric_limits<int>::max()) {
+          std::cout << std::setw(3) << "INF";
+        } else {
+          std::cout << std::setw(3) << res[i][j];
+        }
+        std::cout << (j == res[i].size() - 1 ? "|" : " ");
+      }
+      std::cout << std::endl;
+      for (int j = 0; j <= res[i].size(); ++j) {
+        std::cout << "---+";
+      }
+      std::cout << std::endl;
+    }
   } catch (std::exception& e) {
     PrintWarning(e.what());
   }
