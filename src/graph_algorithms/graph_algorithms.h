@@ -21,7 +21,7 @@ class s21_graph_algorithms {
       s21_graph& graph, int vertex1, int vertex2);
   static s21::vector<s21::vector<int>> GetShortestPathsBetweenAllVertices(
       s21_graph& graph);
-  static void GetLeastSpanningTree(s21_graph& graph);
+  static s21::vector<s21::vector<int>> GetLeastSpanningTree(s21_graph& graph);
   static TsmResult SolveTravelingSalesmanProblem(s21_graph& graph);
   static void AnalyzeTSPAlgorithms(s21_graph& graph);
 

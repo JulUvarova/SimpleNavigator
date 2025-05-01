@@ -32,4 +32,5 @@ class CLInterface {
   void PrintWarning(const std::string msg) const;
   void PrintInput(const std::string msg) const;
   void CleanInput();
+  void PrintMatrix(s21::vector<s21::vector<int>>& matrix);
 };

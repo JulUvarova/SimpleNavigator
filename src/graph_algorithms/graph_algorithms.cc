@@ -153,10 +153,25 @@ s21_graph_algorithms::GetShortestPathsBetweenAllVertices(s21_graph& graph) {
   return distances;
 }
 
-void s21_graph_algorithms::GetLeastSpanningTree(s21_graph& graph) {
-  // searching for the minimal spanning tree in a graph using Prim's
-  // algorithm. As a result, the function should return the adjacency matrix
-  // for the minimal spanning tree.
+s21::vector<s21::vector<int>> s21_graph_algorithms::GetLeastSpanningTree(
+    s21_graph& graph) {
+  s21::vector<s21::vector<int>> tree;
+  // s21::vector<int> visited;  // откуда пришли
+  // for (int i = 0; i < graph.Size(); ++i) {
+  //   visited.push_back(-1);
+  // }
+  // int curr = 0;
+  // visited[curr] = 0;
+
+  // while (curr != -1) {
+  //   int min = std::numeric_limits<int>::max();
+  //   int min_indx = -1;
+  //   for (int i = 0; i < graph.Size(); ++i) {
+  //     if (graph(curr, i) != 0 && visited[i] ==-1 && graph(curr, i) < min) {
+  //     }
+  //   }
+  // }
+  return tree;
 }
 
 TsmResult s21_graph_algorithms::SolveTravelingSalesmanProblem(

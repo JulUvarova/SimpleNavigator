@@ -95,9 +95,11 @@ void CLInterface::MinimumSpanningTree() {
   if (!CheckGraph()) return;
 
   try {
-    std::cout << "РЕАЛИЗОВАТЬ ПОИСК МИНИМАЛЬНОГО ОСТОВНОГО ДЕРЕВА" << std::endl;
-    s21_graph_algorithms::GetLeastSpanningTree(graph_);
-    // TODO
+    s21::vector<s21::vector<int>> res =
+        s21_graph_algorithms::GetLeastSpanningTree(graph_);
+
+    std::cout << "Матрица смежности для минимального остовного дерева:" << std::endl;
+    PrintMatrix(res);
   } catch (std::exception& e) {
     PrintWarning(e.what());
   }
@@ -112,33 +114,37 @@ void CLInterface::ShortestPathBetweenAllVertices() {
 
     std::cout << "Матрица расстояний с кратчайшими путями между вершинами:"
               << std::endl;
-    std::cout << std::setw(3) << "   |";
-    for (int i = 0; i < res.size(); ++i) {
-      std::cout << std::setw(3) << i + 1 << "|";
+    PrintMatrix(res);
+  } catch (std::exception& e) {
+    PrintWarning(e.what());
+  }
+}
+
+void CLInterface::PrintMatrix(s21::vector<s21::vector<int>>& matrix) {
+  std::cout << std::setw(3) << "   |";
+  for (int i = 0; i < matrix.size(); ++i) {
+    std::cout << std::setw(3) << i + 1 << "|";
+  }
+  std::cout << std::endl;
+  for (int j = 0; j <= matrix.size(); ++j) {
+    std::cout << "---+";
+  }
+  std::cout << std::endl;
+  for (int i = 0; i < matrix.size(); ++i) {
+    std::cout << std::setw(3) << i + 1 << "|";
+    for (int j = 0; j < matrix[i].size(); ++j) {
+      if (matrix[i][j] == std::numeric_limits<int>::max()) {
+        std::cout << std::setw(3) << "INF";
+      } else {
+        std::cout << std::setw(3) << matrix[i][j];
+      }
+      std::cout << (j == matrix[i].size() - 1 ? "|" : " ");
     }
     std::cout << std::endl;
-    for (int j = 0; j <= res.size(); ++j) {
+    for (int j = 0; j <= matrix[i].size(); ++j) {
       std::cout << "---+";
     }
     std::cout << std::endl;
-    for (int i = 0; i < res.size(); ++i) {
-      std::cout << std::setw(3) << i + 1 << "|";
-      for (int j = 0; j < res[i].size(); ++j) {
-        if (res[i][j] == std::numeric_limits<int>::max()) {
-          std::cout << std::setw(3) << "INF";
-        } else {
-          std::cout << std::setw(3) << res[i][j];
-        }
-        std::cout << (j == res[i].size() - 1 ? "|" : " ");
-      }
-      std::cout << std::endl;
-      for (int j = 0; j <= res[i].size(); ++j) {
-        std::cout << "---+";
-      }
-      std::cout << std::endl;
-    }
-  } catch (std::exception& e) {
-    PrintWarning(e.what());
   }
 }
 
