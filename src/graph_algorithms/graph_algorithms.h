@@ -1,6 +1,7 @@
 #pragma once
 #include <algorithm>
 #include <limits>
+#include <queue>
 
 #include "../containers/s21_containers.h"
 #include "../graph/graph.h"
@@ -21,10 +22,12 @@ class s21_graph_algorithms {
       s21_graph& graph, int vertex1, int vertex2);
   static s21::vector<s21::vector<int>> GetShortestPathsBetweenAllVertices(
       s21_graph& graph);
-  static s21::vector<s21::vector<int>> GetLeastSpanningTree(s21_graph& graph);
+  static std::pair<int, s21::vector<s21::vector<int>>> GetLeastSpanningTree(s21_graph& graph);
   static TsmResult SolveTravelingSalesmanProblem(s21_graph& graph);
   static void AnalyzeTSPAlgorithms(s21_graph& graph);
 
  private:
+  inline static const int kIntMax = std::numeric_limits<int>::max();
+
   static bool CheckVertex(s21_graph& graph, int vertex);
 };

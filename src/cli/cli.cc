@@ -95,11 +95,13 @@ void CLInterface::MinimumSpanningTree() {
   if (!CheckGraph()) return;
 
   try {
-    s21::vector<s21::vector<int>> res =
-        s21_graph_algorithms::GetLeastSpanningTree(graph_);
+    auto res = s21_graph_algorithms::GetLeastSpanningTree(graph_);
 
-    std::cout << "Матрица смежности для минимального остовного дерева:" << std::endl;
-    PrintMatrix(res);
+    std::cout << "Матрица смежности для минимального остовного дерева:"
+              << std::endl;
+    PrintMatrix(res.second);
+    std::cout << "Вес минимального остовного дерева: " << res.first
+              << std::endl;
   } catch (std::exception& e) {
     PrintWarning(e.what());
   }

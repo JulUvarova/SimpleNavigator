@@ -82,9 +82,8 @@ s21_graph_algorithms::GetShortestPathBetweenVertices(s21_graph& graph,
   s21::vector<int> previous;
   s21::queue<int> queue;  // TODO heap?
   s21::vector<bool> visited;
-  int max = std::numeric_limits<int>::max();
   for (int i = 0; i < graph.Size(); ++i) {
-    distance.push_back(max);
+    distance.push_back(kIntMax);
     previous.push_back(-1);
     visited.push_back(false);
   }
@@ -112,7 +111,7 @@ s21_graph_algorithms::GetShortestPathBetweenVertices(s21_graph& graph,
     }
   }
 
-  if (distance[finish] == max) return {-1, path};  //! not found
+  if (distance[finish] == kIntMax) return {-1, path};  //! not found
 
   for (int i = finish; i != previous[i] && previous[i] != -1; i = previous[i]) {
     path.push_back(i);
@@ -127,14 +126,13 @@ s21_graph_algorithms::GetShortestPathBetweenVertices(s21_graph& graph,
 s21::vector<s21::vector<int>>
 s21_graph_algorithms::GetShortestPathsBetweenAllVertices(s21_graph& graph) {
   s21::vector<s21::vector<int>> distances;
-  int max = std::numeric_limits<int>::max();
   for (int i = 0; i < graph.Size(); ++i) {
     distances.push_back(s21::vector<int>());
     for (int j = 0; j < graph.Size(); ++j) {
       if (i == j)
         distances[i].push_back(0);
       else if (graph(i, j) == 0)
-        distances[i].push_back(max);
+        distances[i].push_back(kIntMax);
       else
         distances[i].push_back(graph(i, j));
     }
@@ -143,7 +141,7 @@ s21_graph_algorithms::GetShortestPathsBetweenAllVertices(s21_graph& graph) {
   for (int k = 0; k < graph.Size(); ++k) {
     for (int i = 0; i < graph.Size(); ++i) {
       for (int j = 0; j < graph.Size(); ++j) {
-        if (distances[i][k] < max && distances[k][j] < max) {
+        if (distances[i][k] < kIntMax && distances[k][j] < kIntMax) {
           distances[i][j] =
               std::min(distances[i][j], distances[i][k] + distances[k][j]);
         }
@@ -153,25 +151,69 @@ s21_graph_algorithms::GetShortestPathsBetweenAllVertices(s21_graph& graph) {
   return distances;
 }
 
-s21::vector<s21::vector<int>> s21_graph_algorithms::GetLeastSpanningTree(
-    s21_graph& graph) {
-  s21::vector<s21::vector<int>> tree;
-  // s21::vector<int> visited;  // откуда пришли
-  // for (int i = 0; i < graph.Size(); ++i) {
-  //   visited.push_back(-1);
-  // }
-  // int curr = 0;
-  // visited[curr] = 0;
+std::pair<int, s21::vector<s21::vector<int>>>
+s21_graph_algorithms::GetLeastSpanningTree(s21_graph& graph) {
+  //! проблема с несвязными. Нужно отсекать сразу
+  if (graph.GetType() != GraphType::kWeightedUndirected) {
+    throw std::invalid_argument(
+        "Алгоритм Прима применим только к взвешенным неориентированным "
+        "графам!");
+  }
+  s21::vector<s21::vector<int>> res;
+  if (graph.Size() == 0) return {0, res};
 
-  // while (curr != -1) {
-  //   int min = std::numeric_limits<int>::max();
-  //   int min_indx = -1;
-  //   for (int i = 0; i < graph.Size(); ++i) {
-  //     if (graph(curr, i) != 0 && visited[i] ==-1 && graph(curr, i) < min) {
-  //     }
-  //   }
-  // }
-  return tree;
+  s21::vector<int> key;
+  for (int i = 0; i < graph.Size(); ++i) key.push_back(kIntMax);
+
+  s21::vector<bool> visited;  // добавлено в дерево
+  for (int i = 0; i < graph.Size(); ++i) visited.push_back(false);
+
+  s21::vector<int> parents;  // с кем связаны вершины
+  for (int i = 0; i < graph.Size(); ++i) parents.push_back(-1);
+
+  std::priority_queue<std::pair<int, int>, std::vector<std::pair<int, int>>,
+                      std::greater<std::pair<int, int>>>
+      edges_heap;  // ребро, вершина
+
+  // начинаю с вершины 0
+  key[0] = 0;
+  edges_heap.push(std::make_pair(0, 0));
+
+  int weight_sum = 0;  //! Общий вес основного дерева
+
+  while (!edges_heap.empty()) {
+    auto curr = edges_heap.top();
+    edges_heap.pop();
+
+    if (visited[curr.second]) continue;
+
+    visited[curr.second] = true;
+    weight_sum += curr.first;
+    for (int i = 0; i < graph.Size(); ++i) {
+      int edge = graph(curr.second, i);
+      if (edge != 0 && !visited[i] && edge < key[i]) {
+        key[i] = edge;
+        parents[i] = curr.second;
+        edges_heap.push(std::make_pair(edge, i));
+      }
+    }
+  }
+
+  for (int i = 0; i < graph.Size(); ++i) {
+    res.push_back(s21::vector<int>());
+    for (int j = 0; j < graph.Size(); ++j) {
+      res[i].push_back(0);
+    }
+  }
+
+  for (int i = 0; i < parents.size(); ++i) {
+    if (parents[i] != -1) {
+      res[i][parents[i]] = graph(i, parents[i]);
+      res[parents[i]][i] = res[i][parents[i]];
+    }
+  }
+
+  return {weight_sum, res};
 }
 
 TsmResult s21_graph_algorithms::SolveTravelingSalesmanProblem(

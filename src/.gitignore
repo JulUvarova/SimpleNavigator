@@ -1,0 +1,7 @@
+*.dot
+*.o
+*.a
+*.info
+*.gcno
+*.gcda
+
