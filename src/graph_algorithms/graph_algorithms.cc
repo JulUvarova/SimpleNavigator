@@ -4,18 +4,14 @@
 
 #include "graph_tsm_aco.h"
 
-s21::vector<int> s21_graph_algorithms::DepthFirstSearch(s21_graph& graph,
+std::vector<int> s21_graph_algorithms::DepthFirstSearch(s21_graph& graph,
                                                         int start_vertex) {
-  s21::vector<int> path;
+  std::vector<int> path;
   if (!CheckVertex(graph, start_vertex)) {
     return path;
   }
-
   s21::stack<int> stack;
-  s21::vector<bool> visited;
-  for (int i = 0; i < graph.Size(); ++i) {
-    visited.push_back(false);
-  }
+  std::vector<bool> visited(graph.Size(), false);
 
   stack.push(start_vertex);
 
@@ -36,18 +32,14 @@ s21::vector<int> s21_graph_algorithms::DepthFirstSearch(s21_graph& graph,
   return path;
 }
 
-s21::vector<int> s21_graph_algorithms::BreadthFirstSearch(s21_graph& graph,
+std::vector<int> s21_graph_algorithms::BreadthFirstSearch(s21_graph& graph,
                                                           int start_vertex) {
-  s21::vector<int> path;
+  std::vector<int> path;
   if (!CheckVertex(graph, start_vertex)) {
     return path;
   }
-
   s21::queue<int> queue;
-  s21::vector<bool> visited;
-  for (int i = 0; i < graph.Size(); ++i) {
-    visited.push_back(0);
-  }
+  std::vector<bool> visited(graph.Size(), 0);
 
   queue.push(start_vertex);
   visited[start_vertex] = true;
@@ -68,24 +60,20 @@ s21::vector<int> s21_graph_algorithms::BreadthFirstSearch(s21_graph& graph,
   return path;
 }
 
-std::pair<int, s21::vector<int>>
+std::pair<int, std::vector<int>>
 s21_graph_algorithms::GetShortestPathBetweenVertices(s21_graph& graph,
                                                      int start, int finish) {
-  s21::vector<int> path;
+  std::vector<int> path;
   if (!CheckVertex(graph, start) || !CheckVertex(graph, finish) ||
       start == finish) {
     return {-1, path};
   }
 
-  s21::vector<int> distance;
-  s21::vector<int> previous;
+  std::vector<int> distance(graph.Size(), kIntMax);
+  std::vector<int> previous(graph.Size(), -1);
+  std::vector<bool> visited(graph.Size(), false);
   s21::queue<int> queue;
-  s21::vector<bool> visited;
-  for (int i = 0; i < graph.Size(); ++i) {
-    distance.push_back(kIntMax);
-    previous.push_back(-1);
-    visited.push_back(false);
-  }
+
   distance[start] = 0;
   previous[start] = start;
   queue.push(start);
@@ -122,11 +110,11 @@ s21_graph_algorithms::GetShortestPathBetweenVertices(s21_graph& graph,
   return {distance[finish], path};
 }
 
-s21::vector<s21::vector<int>>
+std::vector<std::vector<int>>
 s21_graph_algorithms::GetShortestPathsBetweenAllVertices(s21_graph& graph) {
-  s21::vector<s21::vector<int>> distances;
+  std::vector<std::vector<int>> distances;
   for (int i = 0; i < graph.Size(); ++i) {
-    distances.push_back(s21::vector<int>());
+    distances.push_back(std::vector<int>());
     for (int j = 0; j < graph.Size(); ++j) {
       if (i == j)
         distances[i].push_back(0);
@@ -150,7 +138,7 @@ s21_graph_algorithms::GetShortestPathsBetweenAllVertices(s21_graph& graph) {
   return distances;
 }
 
-std::pair<int, s21::vector<s21::vector<int>>>
+std::pair<int, std::vector<std::vector<int>>>
 s21_graph_algorithms::GetLeastSpanningTree(s21_graph& graph) {
   //! проблема с несвязными. Нужно отсекать сразу
   if (graph.GetType() != GraphType::kWeightedUndirected) {
@@ -158,17 +146,13 @@ s21_graph_algorithms::GetLeastSpanningTree(s21_graph& graph) {
         "Алгоритм Прима применим только к взвешенным неориентированным "
         "графам!");
   }
-  s21::vector<s21::vector<int>> res;
+  std::vector<std::vector<int>> res(graph.Size(),
+                                    std::vector<int>(graph.Size(), 0));
   if (graph.Size() == 0) return {0, res};
 
-  s21::vector<int> key;
-  for (int i = 0; i < graph.Size(); ++i) key.push_back(kIntMax);
-
-  s21::vector<bool> visited;  // добавлено в дерево
-  for (int i = 0; i < graph.Size(); ++i) visited.push_back(false);
-
-  s21::vector<int> parents;  // с кем связаны вершины
-  for (int i = 0; i < graph.Size(); ++i) parents.push_back(-1);
+  std::vector<int> key(graph.Size(), kIntMax);
+  std::vector<bool> visited(graph.Size(), false);  // добавлено в дерево
+  std::vector<int> parents(graph.Size(), -1);      // с кем связаны вершины
 
   std::priority_queue<std::pair<int, int>, std::vector<std::pair<int, int>>,
                       std::greater<std::pair<int, int>>>
@@ -196,11 +180,6 @@ s21_graph_algorithms::GetLeastSpanningTree(s21_graph& graph) {
         edges_heap.push(std::make_pair(edge, i));
       }
     }
-  }
-
-  for (int i = 0; i < graph.Size(); ++i) {
-    res.push_back(s21::vector<int>());
-    for (int j = 0; j < graph.Size(); ++j) res[i].push_back(0);
   }
 
   for (int i = 0; i < parents.size(); ++i) {

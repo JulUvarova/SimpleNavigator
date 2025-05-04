@@ -80,7 +80,7 @@ test_graph: s21_graph $(GRAPH_TEST_SRC)
 	$(CXX) $(CXXFLAGS) -o $@ $(GRAPH_TEST_SRC) $(GRAPH_LIB) $(LDFLAGS)
 	./$@
 
-test_graph_algorithms: s21_graph_algorithms $(GRAPH_ALGORITHMS_TEST_SRC)
+test_graph_algorithms: s21_graph s21_graph_algorithms $(GRAPH_ALGORITHMS_TEST_SRC)
 	$(CXX) $(CXXFLAGS) -o $@ $(GRAPH_ALGORITHMS_TEST_SRC) $(GRAPH_ALGORITHMS_LIB) $(GRAPH_LIB) $(LDFLAGS)
 	./$@
 
@@ -91,19 +91,19 @@ gcov_report: clean_coverage
 	$(CXX) $(GCOV_FLAGS) $(CXXFLAGS) $(GRAPH_TEST_SRC) $(GRAPH_SRC) -o $(TEST_GRAPH_BIN) $(LDFLAGS)
 	./$(TEST_GRAPH_BIN)
 	lcov --ignore-errors mismatch,mismatch --no-external -t "$(TEST_GRAPH_BIN)" -o ./$(TEST_GRAPH_BIN).info -c -d .
-	lcov --remove ./$(TEST_GRAPH_BIN).info "*_test.cc" -o ./$(TEST_GRAPH_BIN).info
+	lcov --remove ./$(TEST_GRAPH_BIN).info "*_test.cc" ".h" -o ./$(TEST_GRAPH_BIN).info
 
 	$(CXX) $(GCOV_FLAGS) $(CXXFLAGS) $(GRAPH_ALGORITHMS_TEST_SRC) $(GRAPH_ALGORITHMS_SRC) $(GRAPH_SRC) -o $(TEST_ALG_BIN) $(LDFLAGS)
 	./$(TEST_ALG_BIN)
 	lcov --ignore-errors mismatch,mismatch --no-external -t "$(TEST_ALG_BIN)" -o ./$(TEST_ALG_BIN).info -c -d .
-	lcov --remove ./$(TEST_ALG_BIN).info "*_test.cc" -o ./$(TEST_ALG_BIN).info
+	lcov --remove ./$(TEST_ALG_BIN).info "*_test.cc" ".h" -o ./$(TEST_ALG_BIN).info
 
 # 	# Merge coverage data and generate report
 	lcov -a ./$(TEST_ALG_BIN).info -a ./$(TEST_GRAPH_BIN).info -o merged_coverage.info
 	genhtml -o report merged_coverage.info
 
 	open ./report/index.html
-	
+
 clean_coverage:
 	rm -rf coverage* report
 	rm -f *.gcda *.gcno *.info test_obj_data test_transform

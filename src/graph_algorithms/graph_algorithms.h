@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <limits>
 #include <queue>
+#include <vector>
 
 #include "../containers/s21_containers.h"
 #include "../graph/graph.h"
@@ -15,14 +16,14 @@ struct TsmResult {
 
 class s21_graph_algorithms {
  public:
-  static s21::vector<int> DepthFirstSearch(s21_graph& graph, int start_vertex);
-  static s21::vector<int> BreadthFirstSearch(s21_graph& graph,
+  static std::vector<int> DepthFirstSearch(s21_graph& graph, int start_vertex);
+  static std::vector<int> BreadthFirstSearch(s21_graph& graph,
                                              int start_vertex);
-  static std::pair<int, s21::vector<int>> GetShortestPathBetweenVertices(
+  static std::pair<int, std::vector<int>> GetShortestPathBetweenVertices(
       s21_graph& graph, int vertex1, int vertex2);
-  static s21::vector<s21::vector<int>> GetShortestPathsBetweenAllVertices(
+  static std::vector<std::vector<int>> GetShortestPathsBetweenAllVertices(
       s21_graph& graph);
-  static std::pair<int, s21::vector<s21::vector<int>>> GetLeastSpanningTree(s21_graph& graph);
+  static std::pair<int, std::vector<std::vector<int>>> GetLeastSpanningTree(s21_graph& graph);
   static TsmResult SolveTravelingSalesmanProblem(s21_graph& graph);
   static void AnalyzeTSPAlgorithms(s21_graph& graph);
 

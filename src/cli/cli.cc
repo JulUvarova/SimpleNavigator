@@ -111,7 +111,7 @@ void CLInterface::ShortestPathBetweenAllVertices() {
   if (!CheckGraph()) return;
 
   try {
-    s21::vector<s21::vector<int>> res =
+    std::vector<std::vector<int>> res =
         s21_graph_algorithms::GetShortestPathsBetweenAllVertices(graph_);
 
     std::cout << "Матрица расстояний с кратчайшими путями между вершинами:"
@@ -122,7 +122,7 @@ void CLInterface::ShortestPathBetweenAllVertices() {
   }
 }
 
-void CLInterface::PrintMatrix(s21::vector<s21::vector<int>>& matrix) {
+void CLInterface::PrintMatrix(std::vector<std::vector<int>>& matrix) {
   std::cout << std::setw(3) << "   |";
   for (int i = 0; i < matrix.size(); ++i) {
     std::cout << std::setw(3) << i + 1 << "|";
@@ -192,7 +192,7 @@ void CLInterface::DFS() {
   if (!ValidateVertex(start)) return;
 
   try {
-    s21::vector res = s21_graph_algorithms::DepthFirstSearch(graph_, start - 1);
+    auto res = s21_graph_algorithms::DepthFirstSearch(graph_, start - 1);
     for (auto elem : res) std::cout << elem + 1 << " ";
     std::cout << std::endl;
   } catch (std::exception& e) {
@@ -210,8 +210,7 @@ void CLInterface::BFS() {
   if (!ValidateVertex(start)) return;
 
   try {
-    s21::vector res =
-        s21_graph_algorithms::BreadthFirstSearch(graph_, start - 1);
+    auto res = s21_graph_algorithms::BreadthFirstSearch(graph_, start - 1);
     for (auto elem : res) std::cout << elem + 1 << " ";
     std::cout << std::endl;
   } catch (std::exception& e) {
