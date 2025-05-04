@@ -8,7 +8,7 @@ s21::vector<int> s21_graph_algorithms::DepthFirstSearch(s21_graph& graph,
                                                         int start_vertex) {
   s21::vector<int> path;
   if (!CheckVertex(graph, start_vertex)) {
-    return path;  // !или кидать ошибку?
+    return path;
   }
 
   s21::stack<int> stack;
@@ -28,7 +28,6 @@ s21::vector<int> s21_graph_algorithms::DepthFirstSearch(s21_graph& graph,
     visited[curr] = true;
 
     for (int i = graph.Size() - 1; i >= 0; --i) {
-      // for (int i = 0; i < graph.Size(); ++i) {
       if (graph(curr, i) > 0 && !visited[i]) {
         stack.push(i);
       }
@@ -41,7 +40,7 @@ s21::vector<int> s21_graph_algorithms::BreadthFirstSearch(s21_graph& graph,
                                                           int start_vertex) {
   s21::vector<int> path;
   if (!CheckVertex(graph, start_vertex)) {
-    return path;  // !или кидать ошибку?
+    return path;
   }
 
   s21::queue<int> queue;
@@ -75,12 +74,12 @@ s21_graph_algorithms::GetShortestPathBetweenVertices(s21_graph& graph,
   s21::vector<int> path;
   if (!CheckVertex(graph, start) || !CheckVertex(graph, finish) ||
       start == finish) {
-    return {-1, path};  // !или кидать ошибку?
+    return {-1, path};
   }
 
   s21::vector<int> distance;
   s21::vector<int> previous;
-  s21::queue<int> queue;  // TODO heap?
+  s21::queue<int> queue;
   s21::vector<bool> visited;
   for (int i = 0; i < graph.Size(); ++i) {
     distance.push_back(kIntMax);
@@ -179,7 +178,7 @@ s21_graph_algorithms::GetLeastSpanningTree(s21_graph& graph) {
   key[0] = 0;
   edges_heap.push(std::make_pair(0, 0));
 
-  int weight_sum = 0;  //! Общий вес основного дерева
+  int weight_sum = 0;
 
   while (!edges_heap.empty()) {
     auto curr = edges_heap.top();
@@ -201,9 +200,7 @@ s21_graph_algorithms::GetLeastSpanningTree(s21_graph& graph) {
 
   for (int i = 0; i < graph.Size(); ++i) {
     res.push_back(s21::vector<int>());
-    for (int j = 0; j < graph.Size(); ++j) {
-      res[i].push_back(0);
-    }
+    for (int j = 0; j < graph.Size(); ++j) res[i].push_back(0);
   }
 
   for (int i = 0; i < parents.size(); ++i) {

@@ -102,6 +102,8 @@ gcov_report: clean_coverage
 	lcov -a ./$(TEST_ALG_BIN).info -a ./$(TEST_GRAPH_BIN).info -o merged_coverage.info
 	genhtml -o report merged_coverage.info
 
+	open ./report/index.html
+	
 clean_coverage:
 	rm -rf coverage* report
 	rm -f *.gcda *.gcno *.info test_obj_data test_transform
