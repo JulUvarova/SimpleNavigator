@@ -21,13 +21,14 @@ ifeq ($(OS), Windows_NT)
     GTEST_LIB = -L./external/googletest/build/lib
     CXXFLAGS = $(BASE_CXXFLAGS) $(GTEST_INC)
     LDFLAGS = $(BASE_LDFLAGS) $(GTEST_LIB) -lgtest -lgtest_main
+    GCOV_FLAGS = --coverage -lgcov
 else
     # Assume Linux/Unix
     CXXFLAGS = $(BASE_CXXFLAGS)
     LDFLAGS = $(BASE_LDFLAGS) -lgtest -lgtest_main
+    GCOV_FLAGS = --coverage -lsubunit -lgcov
 endif
 
-GCOV_FLAGS = --coverage -lsubunit -lgcov
 CPPCHECK_FLAGS = --enable=all --suppress=missingIncludeSystem --language=c++ \
 				 --quiet --suppress=unusedFunction --suppress=unusedStructMember \
 				 --suppress=shadowFunction --suppress=missingInclude --suppress=unknownMacro \
@@ -38,8 +39,6 @@ PROJECT_NAME = SimpleNavigator
 CONTAINERS_INC = containers/*.h
 
 CLI_SRC = cli/cli.cc
-
-UTILS_SRC = utils/*.cc
 
 GRAPH_LIB = s21_graph.a
 GRAPH_SRC = graph/graph.cc
@@ -58,7 +57,7 @@ all: $(PROJECT_NAME)
 	./$(PROJECT_NAME)
 
 $(PROJECT_NAME): $(CONTAINERS_INC) s21_graph s21_graph_algorithms main.cpp
-	$(CXX) $(CXXFLAGS) main.cpp $(CLI_SRC) -o $@ $(GRAPH_LIB) $(GRAPH_ALGORITHMS_LIB) $(UTILS_SRC) $(LDFLAGS)
+	$(CXX) $(CXXFLAGS) main.cpp $(CLI_SRC) -o $@ $(GRAPH_LIB) $(GRAPH_ALGORITHMS_LIB) $(LDFLAGS)
 	rm -f cli/*.o $(GRAPH_LIB) $(GRAPH_ALGORITHMS_LIB)
 
 #########################################

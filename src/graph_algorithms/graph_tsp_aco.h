@@ -126,8 +126,6 @@ class AntColonyOptimizer {
       int next_city = SelectNextCity(current_city, visited);
       if (next_city == -1) {
         // Ant got stuck - should not happen in a complete graph TSP
-        // If the graph can be incomplete, this needs robust handling.
-        std::cerr << "Warning: Ant got stuck!" << std::endl;
         return {};  // Return empty tour to indicate failure
       }
       tour.push_back(next_city);

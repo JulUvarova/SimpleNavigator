@@ -1,4 +1,5 @@
 #include "graph_algorithms.h"
+#include "../utils/timer.h"
 
 #include <gtest/gtest.h>
 
@@ -250,6 +251,86 @@ TEST(GraphAlgorithmsTest, DisconnectedUndirectedWeighted) {
   EXPECT_THROW(s21_graph_algorithms::GetLeastSpanningTree(graph),
                std::logic_error);
 }
+
+// TSP tests
+
+TEST(TSPTest, ACO_non_connected_graph) {
+  s21_graph graph;
+  std::string filename = "test_graph.txt";
+  {
+    std::ofstream file(filename);
+    file << "0 1 1 0 0 0\n"
+            "1 0 1 1 0 0\n"
+            "1 1 0 1 0 0\n"
+            "0 1 1 0 1 0\n"
+            "0 0 0 1 0 1\n"
+            "0 0 0 0 1 0\n";
+  }
+  graph.LoadFromFile(filename);
+  std::filesystem::remove(filename);
+
+  auto result = s21_graph_algorithms::SolveTravelingSalesmanProblem(graph, TSPAlgorithm::ACO);
+  EXPECT_EQ(result.distance, std::numeric_limits<double>::infinity());
+  EXPECT_EQ(result.vertices.size(), 0);
+}
+
+TEST(TSPTest, ACO_connected_graph) {
+  s21_graph graph;
+  std::string filename = "test_graph.txt";
+  {
+    std::ofstream file(filename);
+    file << "0 1 2\n"
+            "1 0 2\n"
+            "2 2 0\n";
+  } 
+  graph.LoadFromFile(filename);
+  std::filesystem::remove(filename);
+
+  auto result = s21_graph_algorithms::SolveTravelingSalesmanProblem(graph, TSPAlgorithm::ACO);
+  EXPECT_EQ(result.distance, 5);
+  EXPECT_EQ(result.vertices.size(), 4);
+}
+
+
+TEST(TSPTest, NN_connected_graph) {
+  s21_graph graph;
+  std::string filename = "test_graph.txt";
+  {
+    std::ofstream file(filename);
+    file << "0 1 2\n"
+            "1 0 2\n"
+            "2 2 0\n";
+  }
+  graph.LoadFromFile(filename);
+  std::filesystem::remove(filename);  
+
+  auto result = s21_graph_algorithms::SolveTravelingSalesmanProblem(graph, TSPAlgorithm::NEAREST_NEIGHBOR);
+  EXPECT_EQ(result.distance, 5);
+  EXPECT_EQ(result.vertices.size(), 4);
+} 
+
+
+TEST(TSPTest, BF_connected_graph) {
+  s21_graph graph;
+  std::string filename = "test_graph.txt";
+  {
+    std::ofstream file(filename);
+    file << "0 1 2\n" 
+            "1 0 2\n"
+            "2 2 0\n";
+  }
+  graph.LoadFromFile(filename);
+  std::filesystem::remove(filename);  
+
+  auto result = s21_graph_algorithms::SolveTravelingSalesmanProblem(graph, TSPAlgorithm::BRUTE_FORCE);
+  EXPECT_EQ(result.distance, 5);
+  EXPECT_EQ(result.vertices.size(), 4);
+}
+
+
+
+
+
 
 int main(int argc, char** argv) {
   ::testing::InitGoogleTest(&argc, argv);

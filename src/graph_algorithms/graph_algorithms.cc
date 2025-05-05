@@ -4,9 +4,9 @@
 #include <iomanip>
 
 #include "../utils/timer.h"
-#include "graph_tsm_aco.h"
-#include "graph_tsm_nn.h"
-#include "graph_tsm_bf.h"
+#include "graph_tsp_aco.h"
+#include "graph_tsp_nn.h"
+#include "graph_tsp_bf.h"
 
 std::vector<int> s21_graph_algorithms::DepthFirstSearch(s21_graph& graph,
                                                         int start_vertex) {
