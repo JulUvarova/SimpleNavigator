@@ -1,10 +1,12 @@
 #include "graph_algorithms.h"
 
 #include <stdexcept>
+#include <iomanip>
 
 #include "../utils/timer.h"
 #include "graph_tsm_aco.h"
 #include "graph_tsm_nn.h"
+#include "graph_tsm_bf.h"
 
 std::vector<int> s21_graph_algorithms::DepthFirstSearch(s21_graph& graph,
                                                         int start_vertex) {
@@ -236,11 +238,9 @@ TsmResult s21_graph_algorithms::SolveTravelingSalesmanProblem(
       }
 
       case TSPAlgorithm::BRUTE_FORCE: {
-        // TODO: Implement brute force algorithm
-        TsmResult error_result;
-        error_result.vertices = {};  // Empty vector
-        error_result.distance = std::numeric_limits<double>::infinity();
-        return error_result;
+        s21_bf::BruteForceOptimizer bf_solver(graph);
+        TsmResult result = bf_solver.Run();
+        return result;
         break;
       }
 
@@ -269,7 +269,13 @@ void s21_graph_algorithms::AnalyzeTSPAlgorithms(s21_graph& graph,
   }
 
   std::cout << "Analyzing TSP algorithms for " << iterations << " iterations..."
-             << std::endl;
+            << std::endl;
+
+  // Check graph size for brute force warning
+  if (graph.Size() > 11) {
+    std::cout << "Warning: Brute Force algorithm may take a very long time with " 
+              << graph.Size() << " vertices!" << std::endl;
+  }
 
   // Run each algorithm once first to verify correctness
   std::cout << "\nVerifying algorithms produce correct results:" << std::endl;
@@ -284,7 +290,23 @@ void s21_graph_algorithms::AnalyzeTSPAlgorithms(s21_graph& graph,
   std::cout << "NN Route length: " << nn_result.distance << ", Vertices: " 
             << nn_result.vertices.size() << std::endl;
   
+  // BF (only for small graphs)
+  TsmResult bf_result;
+  bool bf_enabled = graph.Size() <= 11;  // Practical limit for brute force
+  if (bf_enabled) {
+    bf_result = SolveTravelingSalesmanProblem(graph, TSPAlgorithm::BRUTE_FORCE);
+    std::cout << "BF Route length: " << bf_result.distance << ", Vertices: " 
+              << bf_result.vertices.size() << std::endl;
+  } else {
+    std::cout << "BF: Skipped (graph too large)" << std::endl;
+  }
+  
   std::cout << "\nBeginning performance analysis:" << std::endl;
+  
+  // Variables to store execution times
+  double aco_time = 0.0;
+  double nn_time = 0.0;
+  double bf_time = 0.0;
   
   // Test Ant Colony Optimization
   std::cout << "Testing Ant Colony Optimization:" << std::endl;
@@ -297,6 +319,7 @@ void s21_graph_algorithms::AnalyzeTSPAlgorithms(s21_graph& graph,
     }
   }
   s21::Timer::Stop();
+  aco_time = s21::Timer::GetElapsedTimeMs();
   
   // Test Nearest Neighbor
   std::cout << "Testing Nearest Neighbor:" << std::endl;
@@ -310,24 +333,43 @@ void s21_graph_algorithms::AnalyzeTSPAlgorithms(s21_graph& graph,
     }
   }
   s21::Timer::Stop();
+  nn_time = s21::Timer::GetElapsedTimeMs();
   
   // Test Brute Force
-  if (graph.Size() <= 15) {  // Limit brute force to small graphs
+  if (bf_enabled) {
     std::cout << "Testing Brute Force:" << std::endl;
     s21::Timer::Start();
     for (int i = 0; i < iterations; ++i) {
-      try {
-        TsmResult result =
-            SolveTravelingSalesmanProblem(graph, TSPAlgorithm::BRUTE_FORCE);
-      } catch (const std::exception& e) {
-        std::cout << "Brute force algorithm not fully implemented yet."
-                  << std::endl;
-        break;
+      TsmResult result =
+          SolveTravelingSalesmanProblem(graph, TSPAlgorithm::BRUTE_FORCE);
+      // Use result to prevent compiler optimization
+      if (i == iterations-1 && result.distance != bf_result.distance) {
+        std::cout << "Warning: Inconsistent BF results" << std::endl;
       }
     }
     s21::Timer::Stop();
+    bf_time = s21::Timer::GetElapsedTimeMs();
   } else {
     std::cout << "Skipping Brute Force test - graph too large." << std::endl;
+  }
+  
+  // Calculate average time per iteration
+  aco_time /= iterations;
+  nn_time /= iterations;
+  if (bf_enabled) {
+    bf_time /= iterations;
+  }
+  
+  std::cout << "\nAlgorithm comparison summary:" << std::endl;
+  std::cout << "Algorithm       | Route Length | Avg Time (ms)" << std::endl;
+  std::cout << "----------------|--------------|-------------" << std::endl;
+  std::cout << "ACO             | " << std::setw(12) << aco_result.distance << " | " 
+            << std::setw(12) << aco_time << std::endl;
+  std::cout << "Nearest Neighbor| " << std::setw(12) << nn_result.distance << " | " 
+            << std::setw(12) << nn_time << std::endl;
+  if (bf_enabled) {
+    std::cout << "Brute Force     | " << std::setw(12) << bf_result.distance 
+              << " | " << std::setw(12) << bf_time << std::endl;
   }
 }
 
