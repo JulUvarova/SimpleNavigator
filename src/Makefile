@@ -39,6 +39,8 @@ CONTAINERS_INC = containers/*.h
 
 CLI_SRC = cli/cli.cc
 
+UTILS_SRC = utils/*.cc
+
 GRAPH_LIB = s21_graph.a
 GRAPH_SRC = graph/graph.cc
 GRAPH_TEST_SRC = graph/graph_test.cc
@@ -56,7 +58,7 @@ all: $(PROJECT_NAME)
 	./$(PROJECT_NAME)
 
 $(PROJECT_NAME): $(CONTAINERS_INC) s21_graph s21_graph_algorithms main.cpp
-	$(CXX) $(CXXFLAGS) main.cpp $(CLI_SRC) -o $@ $(GRAPH_LIB) $(GRAPH_ALGORITHMS_LIB) $(LDFLAGS)
+	$(CXX) $(CXXFLAGS) main.cpp $(CLI_SRC) -o $@ $(GRAPH_LIB) $(GRAPH_ALGORITHMS_LIB) $(UTILS_SRC) $(LDFLAGS)
 	rm -f cli/*.o $(GRAPH_LIB) $(GRAPH_ALGORITHMS_LIB)
 
 #########################################

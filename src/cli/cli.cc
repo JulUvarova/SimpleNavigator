@@ -65,8 +65,10 @@ void CLInterface::SalesmanProblem() {
 
   try {
     PrintInformation("МУРАВЬИНЫЙ АЛГОРИТМ");
+    s21::Timer::Start();
     TsmResult result =
         s21_graph_algorithms::SolveTravelingSalesmanProblem(graph_);
+    s21::Timer::Stop();
 
     // Print the result
     if (result.distance != std::numeric_limits<double>::infinity() &&

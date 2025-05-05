@@ -3,6 +3,7 @@
 #include <limits>
 
 #include "../graph_algorithms/graph_algorithms.h"
+#include "../utils/timer.h"
 
 class CLInterface {
  public:
