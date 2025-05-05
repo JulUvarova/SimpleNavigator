@@ -253,7 +253,43 @@ TEST(GraphAlgorithmsTest, DisconnectedUndirectedWeighted) {
 }
 
 // TSP tests
+TEST(TSPTest, ACO_incorrect_algorithm) {
+  s21_graph graph;
+  std::string filename = "test_graph.txt";
+  {
+    std::ofstream file(filename);
+    file << "0 1 1 0 0 0\n"
+            "1 0 1 1 0 0\n"
+            "1 1 0 1 0 0\n"
+            "0 1 1 0 1 0\n"
+            "0 0 0 1 0 1\n"
+            "0 0 0 0 1 0\n";
+  }
+  graph.LoadFromFile(filename);
+  std::filesystem::remove(filename);  
 
+  auto result = s21_graph_algorithms::SolveTravelingSalesmanProblem(graph, static_cast<TSPAlgorithm>(4));
+  EXPECT_EQ(result.distance, std::numeric_limits<double>::infinity());
+  EXPECT_EQ(result.vertices.size(), 0);
+}
+
+// ACO for trivial graph
+TEST(TSPTest, ACO_trivial_graph) {
+  s21_graph graph;
+  std::string filename = "test_graph.txt";
+  {
+    std::ofstream file(filename);
+    file << "0\n";
+  }
+  graph.LoadFromFile(filename);
+  std::filesystem::remove(filename);
+
+  auto result = s21_graph_algorithms::SolveTravelingSalesmanProblem(graph, TSPAlgorithm::ACO);
+  EXPECT_EQ(result.distance, 0);
+  EXPECT_EQ(result.vertices.size(), 2);
+}
+
+// ACO for non-connected graph
 TEST(TSPTest, ACO_non_connected_graph) {
   s21_graph graph;
   std::string filename = "test_graph.txt";
