@@ -1,14 +1,12 @@
 #pragma once
 
-#include <stdexcept>
-
-#include <vector>
 #include <fstream>
 #include <iostream>
 #include <map>
 #include <sstream>
 #include <stdexcept>
 #include <string>
+#include <vector>
 
 using GraphData = std::vector<std::vector<int>>;
 

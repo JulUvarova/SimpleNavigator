@@ -7,9 +7,7 @@
 TEST(GraphTest, LoadEmptyFileThrowsException) {
   s21_graph graph;
   std::string filename = "empty_test.txt";
-  {
-    std::ofstream file(filename);
-  }
+  { std::ofstream file(filename); }
 
   EXPECT_THROW(
       {

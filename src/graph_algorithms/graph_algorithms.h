@@ -11,7 +11,7 @@ struct TsmResult {
   std::vector<int> vertices;  // an array with the route you are looking for
                               // (with the vertex traverse order). Instead of
                               // int* you can use std::vector<int>
-  double distance;  // the length of this route
+  double distance;            // the length of this route
 };
 
 class s21_graph_algorithms {
@@ -23,7 +23,8 @@ class s21_graph_algorithms {
       s21_graph& graph, int vertex1, int vertex2);
   static std::vector<std::vector<int>> GetShortestPathsBetweenAllVertices(
       s21_graph& graph);
-  static std::pair<int, std::vector<std::vector<int>>> GetLeastSpanningTree(s21_graph& graph);
+  static std::pair<int, std::vector<std::vector<int>>> GetLeastSpanningTree(
+      s21_graph& graph);
   static TsmResult SolveTravelingSalesmanProblem(s21_graph& graph);
   static void AnalyzeTSPAlgorithms(s21_graph& graph);
 

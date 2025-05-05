@@ -27,8 +27,8 @@ void s21_graph::LoadFromFile(std::string& filename) {
 
   if (graph_.empty()) {
     throw std::logic_error("Файл пуст или содержит только пустые строки!");
-  } 
-  
+  }
+
   if (graph_.size() != graph_[0].size()) {
     throw std::logic_error("Граф не является квадратной матрицей!");
   }

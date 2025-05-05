@@ -56,7 +56,6 @@ std::vector<int> s21_graph_algorithms::BreadthFirstSearch(s21_graph& graph,
       }
     }
   }
-  //! поверка на несвязность? По условию графы связные дб
   return path;
 }
 
@@ -98,7 +97,7 @@ s21_graph_algorithms::GetShortestPathBetweenVertices(s21_graph& graph,
     }
   }
 
-  if (distance[finish] == kIntMax) return {-1, path};  //! not found
+  if (distance[finish] == kIntMax) return {-1, path};  // not found
 
   for (int i = finish; i != previous[i] && previous[i] != -1; i = previous[i]) {
     path.push_back(i);
@@ -140,10 +139,11 @@ s21_graph_algorithms::GetShortestPathsBetweenAllVertices(s21_graph& graph) {
 
 std::pair<int, std::vector<std::vector<int>>>
 s21_graph_algorithms::GetLeastSpanningTree(s21_graph& graph) {
-  //! проблема с несвязными. Нужно отсекать сразу
-  if (graph.GetType() != GraphType::kWeightedUndirected) {
+  if (graph.GetType() != GraphType::kWeightedUndirected ||
+      BreadthFirstSearch(graph, 0).size() != graph.Size()) {
     throw std::invalid_argument(
-        "Алгоритм Прима применим только к взвешенным неориентированным "
+        "Алгоритм Прима применим только к связанным взвешенным "
+        "неориентированным "
         "графам!");
   }
   std::vector<std::vector<int>> res(graph.Size(),
@@ -152,7 +152,7 @@ s21_graph_algorithms::GetLeastSpanningTree(s21_graph& graph) {
 
   std::vector<int> key(graph.Size(), kIntMax);
   std::vector<bool> visited(graph.Size(), false);  // добавлено в дерево
-  std::vector<int> parents(graph.Size(), -1);      // с кем связаны вершины
+  std::vector<int> parents(graph.Size(), -1);  // с кем связаны вершины
 
   std::priority_queue<std::pair<int, int>, std::vector<std::pair<int, int>>,
                       std::greater<std::pair<int, int>>>
