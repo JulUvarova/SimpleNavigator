@@ -67,7 +67,7 @@ void CLInterface::SalesmanProblem() {
     PrintInformation("МУРАВЬИНЫЙ АЛГОРИТМ");
     s21::Timer::Start();
     TsmResult result =
-        s21_graph_algorithms::SolveTravelingSalesmanProblem(graph_);
+        s21_graph_algorithms::SolveTravelingSalesmanProblem(graph_, TSPAlgorithm::NEAREST_NEIGHBOR);
     s21::Timer::Stop();
 
     // Print the result

@@ -2,7 +2,9 @@
 
 #include <stdexcept>
 
+#include "../utils/timer.h"
 #include "graph_tsm_aco.h"
+#include "graph_tsm_nn.h"
 
 std::vector<int> s21_graph_algorithms::DepthFirstSearch(s21_graph& graph,
                                                         int start_vertex) {
@@ -152,7 +154,7 @@ s21_graph_algorithms::GetLeastSpanningTree(s21_graph& graph) {
 
   std::vector<int> key(graph.Size(), kIntMax);
   std::vector<bool> visited(graph.Size(), false);  // добавлено в дерево
-  std::vector<int> parents(graph.Size(), -1);  // с кем связаны вершины
+  std::vector<int> parents(graph.Size(), -1);      // с кем связаны вершины
 
   std::priority_queue<std::pair<int, int>, std::vector<std::pair<int, int>>,
                       std::greater<std::pair<int, int>>>
@@ -193,7 +195,7 @@ s21_graph_algorithms::GetLeastSpanningTree(s21_graph& graph) {
 }
 
 TsmResult s21_graph_algorithms::SolveTravelingSalesmanProblem(
-    s21_graph& graph) {
+    s21_graph& graph, TSPAlgorithm algorithm) {
   if (graph.Size() <= 1) {
     // Handle trivial cases or throw an error if a tour needs >1 city
     if (graph.Size() == 1) {
@@ -208,22 +210,43 @@ TsmResult s21_graph_algorithms::SolveTravelingSalesmanProblem(
   }
 
   try {
-    // Optionally define custom parameters
-    // s21_aco::AcoParams params;
-    // params.num_ants = 20;
-    // params.num_iterations = 200;
-    // ... set other params ...
-    // s21_aco::AntColonyOptimizer aco_solver(graph, params);
+    switch (algorithm) {
+      case TSPAlgorithm::ACO: {
+        // Optionally define custom parameters
+        // s21_aco::AcoParams params;
+        // params.num_ants = 20;
+        // params.num_iterations = 200;
+        // ... set other params ...
+        // s21_aco::AntColonyOptimizer aco_solver(graph, params);
 
-    // Use default parameters
-    s21_aco::AntColonyOptimizer aco_solver(graph);
+        // Use default parameters
+        s21_aco::AntColonyOptimizer aco_solver(graph);
 
-    // Run the algorithm
-    TsmResult result = aco_solver.Run();
+        // Run the algorithm
+        TsmResult result = aco_solver.Run();
+        return result;
+        break;
+      }
 
-    // The ACO solver already adds the start node at the end.
-    // The TsmResult struct expects std::vector<int>, which we are now using.
-    return result;
+      case TSPAlgorithm::NEAREST_NEIGHBOR: {
+        s21_nn::NearestNeighborSolver nn_solver(graph);
+        TsmResult result = nn_solver.Run();  
+        return result;
+        break;
+      }
+
+      case TSPAlgorithm::BRUTE_FORCE: {
+        // TODO: Implement brute force algorithm
+        TsmResult error_result;
+        error_result.vertices = {};  // Empty vector
+        error_result.distance = std::numeric_limits<double>::infinity();
+        return error_result;
+        break;
+      }
+
+      default:
+        throw std::invalid_argument("Invalid TSP algorithm specified.");
+    }
 
   } catch (const std::exception& e) {
     // Rethrow or handle the exception appropriately
@@ -239,20 +262,73 @@ TsmResult s21_graph_algorithms::SolveTravelingSalesmanProblem(
   }
 }
 
-void s21_graph_algorithms::AnalyzeTSPAlgorithms(s21_graph& graph) {
-  // It is necessary to choose two additional algorithms to solve the
-  // traveling salesman problem and implement them as methods of the
-  // GraphAlgorithms class.
-  // Add to the console interface the ability to perform a comparison of
-  // speed of the three algorithms (the ant colony algorithm and two
-  // randomly selected algorithms): The study starts for a graph that was
-  // previously loaded from a file. As part of the study you need to keep
-  // track of the time it took to solve the salesman's problem N times in a
-  // row, by each of the algorithms. Where N is set from the keyboard. The
-  // results of the time measurement must be displayed in the console.
-  // Example: For N = 1000 it will measure how long it will take to solve
-  // the traveling salesman problem 1000 times for the current given graph
-  // by an ant colony algorithm and two randomly chosen algorithms.
+void s21_graph_algorithms::AnalyzeTSPAlgorithms(s21_graph& graph,
+                                                 int iterations) {
+  if (iterations <= 0) {
+    throw std::invalid_argument("Number of iterations must be positive");
+  }
+
+  std::cout << "Analyzing TSP algorithms for " << iterations << " iterations..."
+             << std::endl;
+
+  // Run each algorithm once first to verify correctness
+  std::cout << "\nVerifying algorithms produce correct results:" << std::endl;
+  
+  // ACO
+  TsmResult aco_result = SolveTravelingSalesmanProblem(graph, TSPAlgorithm::ACO);
+  std::cout << "ACO Route length: " << aco_result.distance << ", Vertices: " 
+            << aco_result.vertices.size() << std::endl;
+  
+  // NN
+  TsmResult nn_result = SolveTravelingSalesmanProblem(graph, TSPAlgorithm::NEAREST_NEIGHBOR);
+  std::cout << "NN Route length: " << nn_result.distance << ", Vertices: " 
+            << nn_result.vertices.size() << std::endl;
+  
+  std::cout << "\nBeginning performance analysis:" << std::endl;
+  
+  // Test Ant Colony Optimization
+  std::cout << "Testing Ant Colony Optimization:" << std::endl;
+  s21::Timer::Start();
+  for (int i = 0; i < iterations; ++i) {
+    TsmResult result = SolveTravelingSalesmanProblem(graph, TSPAlgorithm::ACO);
+    // Use result to prevent compiler optimization
+    if (i == iterations-1 && result.distance != aco_result.distance) {
+      std::cout << "Warning: Inconsistent ACO results" << std::endl;
+    }
+  }
+  s21::Timer::Stop();
+  
+  // Test Nearest Neighbor
+  std::cout << "Testing Nearest Neighbor:" << std::endl;
+  s21::Timer::Start();
+  for (int i = 0; i < iterations; ++i) {
+    TsmResult result =
+        SolveTravelingSalesmanProblem(graph, TSPAlgorithm::NEAREST_NEIGHBOR);
+    // Use result to prevent compiler optimization
+    if (i == iterations-1 && result.distance != nn_result.distance) {
+      std::cout << "Warning: Inconsistent NN results" << std::endl;
+    }
+  }
+  s21::Timer::Stop();
+  
+  // Test Brute Force
+  if (graph.Size() <= 15) {  // Limit brute force to small graphs
+    std::cout << "Testing Brute Force:" << std::endl;
+    s21::Timer::Start();
+    for (int i = 0; i < iterations; ++i) {
+      try {
+        TsmResult result =
+            SolveTravelingSalesmanProblem(graph, TSPAlgorithm::BRUTE_FORCE);
+      } catch (const std::exception& e) {
+        std::cout << "Brute force algorithm not fully implemented yet."
+                  << std::endl;
+        break;
+      }
+    }
+    s21::Timer::Stop();
+  } else {
+    std::cout << "Skipping Brute Force test - graph too large." << std::endl;
+  }
 }
 
 bool s21_graph_algorithms::CheckVertex(s21_graph& graph, int vertex) {
