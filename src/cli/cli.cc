@@ -52,9 +52,121 @@ void CLInterface::SalesmanProblemAnalysis() {
   if (!CheckGraph()) return;
 
   try {
+    int kIterations = 10;
     std::cout << "СРАВНИТЬ АЛГОРИТМЫ РЕШЕНИЯ КОММИВОЯЖЕРА" << std::endl;
-    s21_graph_algorithms::AnalyzeTSPAlgorithms(graph_);
-    // TODO
+    // s21_graph_algorithms::AnalyzeTSPAlgorithms(graph_);
+    if (kIterations <= 0) {
+      throw std::invalid_argument("Number of Iterations must be positive");
+    }
+
+    std::cout << "Analyzing TSP algorithms for " << kIterations
+              << " iterations..." << std::endl;
+
+    // Check graph size for brute force warning
+    if (graph_.Size() > 11) {
+      std::cout
+          << "Warning: Brute Force algorithm may take a very long time with "
+          << graph_.Size() << " vertices!" << std::endl;
+    }
+
+    // Run each algorithm once first to verify correctness
+    std::cout << "\nVerifying algorithms produce correct results:" << std::endl;
+
+    // ACO
+    TsmResult aco_result =
+        s21_graph_algorithms::SolveTravelingSalesmanProblem(graph_, TSPAlgorithm::ACO);
+    std::cout << "ACO Route length: " << aco_result.distance
+              << ", Vertices: " << aco_result.vertices.size() << std::endl;
+
+    // NN
+    TsmResult nn_result =
+        s21_graph_algorithms::SolveTravelingSalesmanProblem(graph_, TSPAlgorithm::NEAREST_NEIGHBOR);
+    std::cout << "NN Route length: " << nn_result.distance
+              << ", Vertices: " << nn_result.vertices.size() << std::endl;
+
+    // BF (only for small graphs)
+    TsmResult bf_result;
+    bool bf_enabled = graph_.Size() <= 11;  // Practical limit for brute force
+    if (bf_enabled) {
+      bf_result =
+          s21_graph_algorithms::SolveTravelingSalesmanProblem(graph_, TSPAlgorithm::BRUTE_FORCE);
+      std::cout << "BF Route length: " << bf_result.distance
+                << ", Vertices: " << bf_result.vertices.size() << std::endl;
+    } else {
+      std::cout << "BF: Skipped (graph too large)" << std::endl;
+    }
+
+    std::cout << "\nBeginning performance analysis:" << std::endl;
+
+    // Variables to store execution times
+    double aco_time = 0.0;
+    double nn_time = 0.0;
+    double bf_time = 0.0;
+
+    // Test Ant Colony Optimization
+    std::cout << "Testing Ant Colony Optimization:" << std::endl;
+    s21::Timer::Start();
+    for (int i = 0; i < kIterations; ++i) {
+      TsmResult result =
+          s21_graph_algorithms::SolveTravelingSalesmanProblem(graph_, TSPAlgorithm::ACO);
+      // Use result to prevent compiler optimization
+      if (i == kIterations - 1 && result.distance != aco_result.distance) {
+        std::cout << "Warning: Inconsistent ACO results" << std::endl;
+      }
+    }
+    s21::Timer::Stop();
+    aco_time = s21::Timer::GetElapsedTimeMs();
+
+    // Test Nearest Neighbor
+    std::cout << "Testing Nearest Neighbor:" << std::endl;
+    s21::Timer::Start();
+    for (int i = 0; i < kIterations; ++i) {
+      TsmResult result =
+          s21_graph_algorithms::SolveTravelingSalesmanProblem(graph_, TSPAlgorithm::NEAREST_NEIGHBOR);
+      // Use result to prevent compiler optimization
+      if (i == kIterations - 1 && result.distance != nn_result.distance) {
+        std::cout << "Warning: Inconsistent NN results" << std::endl;
+      }
+    }
+    s21::Timer::Stop();
+    nn_time = s21::Timer::GetElapsedTimeMs();
+
+    // Test Brute Force
+    if (bf_enabled) {
+      std::cout << "Testing Brute Force:" << std::endl;
+      s21::Timer::Start();
+      for (int i = 0; i < kIterations; ++i) {
+        TsmResult result =
+            s21_graph_algorithms::SolveTravelingSalesmanProblem(graph_, TSPAlgorithm::BRUTE_FORCE);
+        // Use result to prevent compiler optimization
+        if (i == kIterations - 1 && result.distance != bf_result.distance) {
+          std::cout << "Warning: Inconsistent BF results" << std::endl;
+        }
+      }
+      s21::Timer::Stop();
+      bf_time = s21::Timer::GetElapsedTimeMs();
+    } else {
+      std::cout << "Skipping Brute Force test - graph too large." << std::endl;
+    }
+
+    // Calculate average time per iteration
+    aco_time /= kIterations;
+    nn_time /= kIterations;
+    if (bf_enabled) {
+      bf_time /= kIterations;
+    }
+
+    std::cout << "\nAlgorithm comparison summary:" << std::endl;
+    std::cout << "Algorithm       | Route Length | Avg Time (ms)" << std::endl;
+    std::cout << "----------------|--------------|-------------" << std::endl;
+    std::cout << "ACO             | " << std::setw(12) << aco_result.distance
+              << " | " << std::setw(12) << aco_time << std::endl;
+    std::cout << "Nearest Neighbor| " << std::setw(12) << nn_result.distance
+              << " | " << std::setw(12) << nn_time << std::endl;
+    if (bf_enabled) {
+      std::cout << "Brute Force     | " << std::setw(12) << bf_result.distance
+                << " | " << std::setw(12) << bf_time << std::endl;
+    }
   } catch (std::exception& e) {
     PrintWarning(e.what());
   }
@@ -66,8 +178,8 @@ void CLInterface::SalesmanProblem() {
   try {
     PrintInformation("МУРАВЬИНЫЙ АЛГОРИТМ");
     s21::Timer::Start();
-    TsmResult result =
-        s21_graph_algorithms::SolveTravelingSalesmanProblem(graph_, TSPAlgorithm::ACO);
+    TsmResult result = s21_graph_algorithms::SolveTravelingSalesmanProblem(
+        graph_, TSPAlgorithm::ACO);
     s21::Timer::Stop();
 
     // Print the result

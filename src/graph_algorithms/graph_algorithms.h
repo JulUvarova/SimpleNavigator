@@ -29,7 +29,7 @@ class s21_graph_algorithms {
       s21_graph& graph);
   static TsmResult SolveTravelingSalesmanProblem(
       s21_graph& graph, TSPAlgorithm algorithm = TSPAlgorithm::ACO);
-  static void AnalyzeTSPAlgorithms(s21_graph& graph, int iterations = 1000);
+  // static void AnalyzeTSPAlgorithms(s21_graph& graph, int iterations = 1000);
 
  private:
   inline static const int kIntMax = std::numeric_limits<int>::max();
