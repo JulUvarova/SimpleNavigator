@@ -53,7 +53,6 @@ TEST(GraphAlgorithmsTest, ConnectedDirectedWeighted) {
   auto bfs = s21_graph_algorithms::BreadthFirstSearch(graph, 3);
   auto shortest_path_dijkstra =
       s21_graph_algorithms::GetShortestPathBetweenVertices(graph, 3, 2);
-  int inf = std::numeric_limits<int>::max();
   auto shortest_path_floyd_warshall =
       s21_graph_algorithms::GetShortestPathsBetweenAllVertices(graph);
 
@@ -61,9 +60,9 @@ TEST(GraphAlgorithmsTest, ConnectedDirectedWeighted) {
   std::vector<int> expected_bfs{3, 0, 4, 1, 5, 2};
   std::vector<int> expected_dijkstra{3, 0, 1, 2};
   std::vector<std::vector<int>> expected_floyd_warshall{
-      {0, 5, 8, inf, inf, 12},    {inf, 0, 3, inf, inf, 7},
-      {inf, inf, 0, inf, inf, 4}, {2, 7, 10, 0, 7, 8},
-      {inf, inf, inf, inf, 0, 1}, {inf, inf, inf, inf, inf, 0}};
+      {0, 5, 8, 0, 0, 12},    {0, 0, 3, 0, 0, 7},
+      {0, 0, 0, 0, 0, 4}, {2, 7, 10, 0, 7, 8},
+      {0, 0, 0, 0, 0, 1}, {0, 0, 0, 0, 0, 0}};
 
   EXPECT_EQ(dfs.size(), 4);
   EXPECT_EQ(dfs, expected_dfs);
@@ -147,10 +146,9 @@ TEST(GraphAlgorithmsTest, ConnectedDirectedUnweighted) {
   std::vector<int> expected_dfs{2, 5, 4, 1, 3};
   std::vector<int> expected_bfs{1, 3, 4, 5, 2};
   std::vector<int> expected_dijkstra{0, 1, 3};
-  int inf = std::numeric_limits<int>::max();
   std::vector<std::vector<int>> expected_floyd_warshall{
-      {0, 1, 1, 2, 2, 2},           {inf, 0, 3, 1, 1, 2}, {inf, 3, 0, 4, 2, 1},
-      {inf, inf, inf, 0, inf, inf}, {inf, 1, 2, 2, 0, 1}, {inf, 2, 1, 3, 1, 0}};
+      {0, 1, 1, 2, 2, 2},           {0, 0, 3, 1, 1, 2}, {0, 3, 0, 4, 2, 1},
+      {0, 0, 0, 0, 0, 0}, {0, 1, 2, 2, 0, 1}, {0, 2, 1, 3, 1, 0}};
 
   EXPECT_EQ(dfs.size(), 5);
   EXPECT_EQ(dfs, expected_dfs);
@@ -234,11 +232,10 @@ TEST(GraphAlgorithmsTest, DisconnectedUndirectedWeighted) {
   std::vector<int> expected_dfs{3, 4};
   std::vector<int> expected_bfs{4, 3};
   std::vector<int> expected_dijkstra{};
-  int inf = std::numeric_limits<int>::max();
   std::vector<std::vector<int>> expected_floyd_warshall{
-      {0, 2, 4, inf, inf, inf},   {2, 0, 3, inf, inf, inf},
-      {4, 3, 0, inf, inf, inf},   {inf, inf, inf, 0, 1, inf},
-      {inf, inf, inf, 1, 0, inf}, {inf, inf, inf, inf, inf, 0}};
+      {0, 2, 4, 0, 0, 0},   {2, 0, 3, 0, 0, 0},
+      {4, 3, 0, 0, 0, 0},   {0, 0, 0, 0, 1, 0},
+      {0, 0, 0, 1, 0, 0}, {0, 0, 0, 0, 0, 0}};
 
   EXPECT_EQ(dfs.size(), 2);
   EXPECT_EQ(dfs, expected_dfs);
