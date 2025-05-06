@@ -1,12 +1,12 @@
 #include "graph_algorithms.h"
 
-#include <stdexcept>
 #include <iomanip>
+#include <stdexcept>
 
 #include "../utils/timer.h"
 #include "graph_tsp_aco.h"
-#include "graph_tsp_nn.h"
 #include "graph_tsp_bf.h"
+#include "graph_tsp_nn.h"
 
 std::vector<int> s21_graph_algorithms::DepthFirstSearch(s21_graph& graph,
                                                         int start_vertex) {
@@ -138,6 +138,13 @@ s21_graph_algorithms::GetShortestPathsBetweenAllVertices(s21_graph& graph) {
       }
     }
   }
+
+  for (int i = 0; i < graph.Size(); ++i) {
+    for (int j = 0; j < graph.Size(); ++j) {
+      if (distances[i][j] == kIntMax) distances[i][j] = 0;
+    }
+  }
+
   return distances;
 }
 
@@ -232,7 +239,7 @@ TsmResult s21_graph_algorithms::SolveTravelingSalesmanProblem(
 
       case TSPAlgorithm::NEAREST_NEIGHBOR: {
         s21_nn::NearestNeighborSolver nn_solver(graph);
-        TsmResult result = nn_solver.Run();  
+        TsmResult result = nn_solver.Run();
         return result;
         break;
       }
@@ -264,7 +271,7 @@ TsmResult s21_graph_algorithms::SolveTravelingSalesmanProblem(
 
 // void s21_graph_algorithms::AnalyzeTSPAlgorithms(s21_graph& graph,
 //                                                  int iterations) {
-  
+
 // }
 
 bool s21_graph_algorithms::CheckVertex(s21_graph& graph, int vertex) {

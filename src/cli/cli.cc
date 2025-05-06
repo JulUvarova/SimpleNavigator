@@ -3,7 +3,7 @@
 void CLInterface::Loop() {
   int choice = -1;
   do {
-    PrintMenu();  //! до цикла?
+    PrintMenu();
     std::cin >> choice;
     if (std::cin.fail()) choice = -1;
     CleanInput();
@@ -73,14 +73,14 @@ void CLInterface::SalesmanProblemAnalysis() {
     std::cout << "\nVerifying algorithms produce correct results:" << std::endl;
 
     // ACO
-    TsmResult aco_result =
-        s21_graph_algorithms::SolveTravelingSalesmanProblem(graph_, TSPAlgorithm::ACO);
+    TsmResult aco_result = s21_graph_algorithms::SolveTravelingSalesmanProblem(
+        graph_, TSPAlgorithm::ACO);
     std::cout << "ACO Route length: " << aco_result.distance
               << ", Vertices: " << aco_result.vertices.size() << std::endl;
 
     // NN
-    TsmResult nn_result =
-        s21_graph_algorithms::SolveTravelingSalesmanProblem(graph_, TSPAlgorithm::NEAREST_NEIGHBOR);
+    TsmResult nn_result = s21_graph_algorithms::SolveTravelingSalesmanProblem(
+        graph_, TSPAlgorithm::NEAREST_NEIGHBOR);
     std::cout << "NN Route length: " << nn_result.distance
               << ", Vertices: " << nn_result.vertices.size() << std::endl;
 
@@ -88,8 +88,8 @@ void CLInterface::SalesmanProblemAnalysis() {
     TsmResult bf_result;
     bool bf_enabled = graph_.Size() <= 11;  // Practical limit for brute force
     if (bf_enabled) {
-      bf_result =
-          s21_graph_algorithms::SolveTravelingSalesmanProblem(graph_, TSPAlgorithm::BRUTE_FORCE);
+      bf_result = s21_graph_algorithms::SolveTravelingSalesmanProblem(
+          graph_, TSPAlgorithm::BRUTE_FORCE);
       std::cout << "BF Route length: " << bf_result.distance
                 << ", Vertices: " << bf_result.vertices.size() << std::endl;
     } else {
@@ -107,8 +107,8 @@ void CLInterface::SalesmanProblemAnalysis() {
     std::cout << "Testing Ant Colony Optimization:" << std::endl;
     s21::Timer::Start();
     for (int i = 0; i < kIterations; ++i) {
-      TsmResult result =
-          s21_graph_algorithms::SolveTravelingSalesmanProblem(graph_, TSPAlgorithm::ACO);
+      TsmResult result = s21_graph_algorithms::SolveTravelingSalesmanProblem(
+          graph_, TSPAlgorithm::ACO);
       // Use result to prevent compiler optimization
       if (i == kIterations - 1 && result.distance != aco_result.distance) {
         std::cout << "Warning: Inconsistent ACO results" << std::endl;
@@ -121,8 +121,8 @@ void CLInterface::SalesmanProblemAnalysis() {
     std::cout << "Testing Nearest Neighbor:" << std::endl;
     s21::Timer::Start();
     for (int i = 0; i < kIterations; ++i) {
-      TsmResult result =
-          s21_graph_algorithms::SolveTravelingSalesmanProblem(graph_, TSPAlgorithm::NEAREST_NEIGHBOR);
+      TsmResult result = s21_graph_algorithms::SolveTravelingSalesmanProblem(
+          graph_, TSPAlgorithm::NEAREST_NEIGHBOR);
       // Use result to prevent compiler optimization
       if (i == kIterations - 1 && result.distance != nn_result.distance) {
         std::cout << "Warning: Inconsistent NN results" << std::endl;
@@ -136,8 +136,8 @@ void CLInterface::SalesmanProblemAnalysis() {
       std::cout << "Testing Brute Force:" << std::endl;
       s21::Timer::Start();
       for (int i = 0; i < kIterations; ++i) {
-        TsmResult result =
-            s21_graph_algorithms::SolveTravelingSalesmanProblem(graph_, TSPAlgorithm::BRUTE_FORCE);
+        TsmResult result = s21_graph_algorithms::SolveTravelingSalesmanProblem(
+            graph_, TSPAlgorithm::BRUTE_FORCE);
         // Use result to prevent compiler optimization
         if (i == kIterations - 1 && result.distance != bf_result.distance) {
           std::cout << "Warning: Inconsistent BF results" << std::endl;
@@ -249,11 +249,7 @@ void CLInterface::PrintMatrix(std::vector<std::vector<int>>& matrix) {
   for (int i = 0; i < matrix.size(); ++i) {
     std::cout << std::setw(3) << i + 1 << "|";
     for (int j = 0; j < matrix[i].size(); ++j) {
-      if (matrix[i][j] == std::numeric_limits<int>::max()) {
-        std::cout << std::setw(3) << "INF";
-      } else {
-        std::cout << std::setw(3) << matrix[i][j];
-      }
+      std::cout << std::setw(3) << matrix[i][j];
       std::cout << (j == matrix[i].size() - 1 ? "|" : " ");
     }
     std::cout << std::endl;
