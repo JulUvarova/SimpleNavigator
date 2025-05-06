@@ -52,7 +52,7 @@ void CLInterface::SalesmanProblemAnalysis() {
   if (!CheckGraph()) return;
 
   try {
-    int kIterations = 10;
+    int kIterations = 1000;
 
     std::cout << "Analyzing TSP algorithms for " << kIterations
               << " iterations..." << std::endl;
