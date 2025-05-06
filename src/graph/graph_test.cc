@@ -28,12 +28,12 @@ TEST(GraphTest, LoadEmptyFileThrowsException) {
 
 TEST(GraphTest, LoadNonExistentFileThrowsException) {
   s21_graph graph;
-  std::string filename = "non_existent_file.txt";
 
   EXPECT_THROW(
       {
         try {
-          graph.LoadFromFile(filename);
+          std::string fn = "non_existent_file.txt";
+          graph.LoadFromFile(fn);
         } catch (const std::logic_error& e) {
           EXPECT_STREQ(e.what(), "Не удалось открыть файл!");
           throw;
@@ -256,9 +256,6 @@ TEST(GraphTest, ExportToDotNonWritableFileThrowsException) {
 
   s21_graph graph;
   std::string input_filename = "simple_graph.txt";
-  std::string output_filename =
-      "/nonexistent/test.dot";  // Non-writable location
-
   // Create a simple graph
   {
     std::ofstream file(input_filename);
@@ -273,6 +270,7 @@ TEST(GraphTest, ExportToDotNonWritableFileThrowsException) {
   EXPECT_THROW(
       {
         try {
+          std::string output_filename = "/nonexistent/test.dot";
           graph.ExportToDot(output_filename);
         } catch (const std::runtime_error& e) {
           EXPECT_TRUE(

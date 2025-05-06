@@ -70,7 +70,7 @@ class list {
 
   list(list &&other) noexcept : list() { swap(other); }
 
-  list(const size_type count, const T &value = T()) : list() {
+  explicit list(const size_type count, const T &value = T()) : list() {
     for (size_t i = 0; i < count; ++i) {
       push_back(value);
     }
@@ -447,8 +447,8 @@ class list {
 
   struct ListNode : public BaseNode {
     T data;
-    ListNode(const T &value) : data(value) {}
-    ListNode(T &&value) : data(std::move(value)) {}
+    explicit ListNode(const T &value) : data(value) {}
+    explicit ListNode(T &&value) : data(std::move(value)) {}
     ListNode &operator=(const ListNode &other) {
       if (this != &other) {
         BaseNode::next = other.next;
@@ -482,8 +482,8 @@ class list {
     node_pointer node_;
 
    public:
-    ListIterator(node_pointer node) : node_(node) {}
-    ListIterator(const ListIterator &other) = default;
+    explicit ListIterator(node_pointer node) : node_(node) {}
+    explicit ListIterator(const ListIterator &other) = default;
     ListIterator &operator=(const ListIterator &other) = default;
 
     ListIterator &operator++() {

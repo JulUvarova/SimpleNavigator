@@ -54,7 +54,8 @@ class AntColonyOptimizer {
    * provided.
    * @throw std::invalid_argument if the graph contains no cities (vertices).
    */
-  AntColonyOptimizer(s21_graph& graph, const AcoParams& params = AcoParams())
+  explicit AntColonyOptimizer(s21_graph& graph,
+                              const AcoParams& params = AcoParams())
       : graph_(graph),
         params_(params),
         num_cities_(graph.Size()),

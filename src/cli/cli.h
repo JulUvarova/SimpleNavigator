@@ -29,9 +29,10 @@ class CLInterface {
   void PrintMenu() const;
   bool CheckGraph() const;
   bool ValidateVertex(int vertex) const;
-  void PrintInformation(const std::string msg) const;
-  void PrintWarning(const std::string msg) const;
-  void PrintInput(const std::string msg) const;
+  void PrintInformation(const std::string& msg) const;
+  void PrintWarning(const std::string& msg) const;
+  void PrintInput(const std::string& msg) const;
   void CleanInput();
-  void PrintMatrix(std::vector<std::vector<int>>& matrix);
+  void PrintMatrix(const std::vector<std::vector<int>>& matrix);
+  void PrintPath(std::string& path_str, const std::vector<int>& result);
 };

@@ -26,7 +26,7 @@ class vector {
   vector() : data_(nullptr), size_(0), capacity_(0) {}
 
   // Parameterized constructor, creates the vector of size n
-  vector(size_type n) : vector() { resize(n); }
+  explicit vector(size_type n) : vector() { resize(n); }
 
   // Initializer list constructor, creates a vector initizialized using
   // std::initializer_list

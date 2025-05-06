@@ -234,21 +234,18 @@ TsmResult s21_graph_algorithms::SolveTravelingSalesmanProblem(
         // Run the algorithm
         TsmResult result = aco_solver.Run();
         return result;
-        break;
       }
 
       case TSPAlgorithm::NEAREST_NEIGHBOR: {
         s21_nn::NearestNeighborSolver nn_solver(graph);
         TsmResult result = nn_solver.Run();
         return result;
-        break;
       }
 
       case TSPAlgorithm::BRUTE_FORCE: {
         s21_bf::BruteForceOptimizer bf_solver(graph);
         TsmResult result = bf_solver.Run();
         return result;
-        break;
       }
 
       default:
@@ -269,12 +266,7 @@ TsmResult s21_graph_algorithms::SolveTravelingSalesmanProblem(
   }
 }
 
-// void s21_graph_algorithms::AnalyzeTSPAlgorithms(s21_graph& graph,
-//                                                  int iterations) {
-
-// }
-
-bool s21_graph_algorithms::CheckVertex(s21_graph& graph, int vertex) {
+bool s21_graph_algorithms::CheckVertex(const s21_graph& graph, int vertex) {
   if (vertex < 0 || vertex >= graph.Size()) return false;
   return true;
 }

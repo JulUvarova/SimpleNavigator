@@ -111,5 +111,5 @@ class s21_graph_algorithms {
    * @param vertex The vertex index (1-indexed).
    * @return True if the vertex is valid, false otherwise.
    */
-  static bool CheckVertex(s21_graph& graph, int vertex);
+  static bool CheckVertex(const s21_graph& graph, int vertex);
 };

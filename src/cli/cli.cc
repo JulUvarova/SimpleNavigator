@@ -54,7 +54,6 @@ void CLInterface::SalesmanProblemAnalysis() {
   try {
     int kIterations = 10;
     std::cout << "СРАВНИТЬ АЛГОРИТМЫ РЕШЕНИЯ КОММИВОЯЖЕРА" << std::endl;
-    // s21_graph_algorithms::AnalyzeTSPAlgorithms(graph_);
     if (kIterations <= 0) {
       throw std::invalid_argument("Number of Iterations must be positive");
     }
@@ -187,13 +186,7 @@ void CLInterface::SalesmanProblem() {
         !result.vertices.empty()) {
       PrintInformation("Найденный маршрут (муравьиный алгоритм):");
       std::string path_str = "";
-      for (size_t i = 0; i < result.vertices.size(); ++i) {
-        path_str += std::to_string(result.vertices[i] + 1);
-        if (i < result.vertices.size() - 1) {
-          path_str += " -> ";
-        }
-      }
-      PrintInformation(path_str);
+      PrintPath(path_str, result.vertices);
       PrintInformation("Длина маршрута: " +
                        std::to_string(static_cast<int>(result.distance)));
     } else {
@@ -203,6 +196,17 @@ void CLInterface::SalesmanProblem() {
   } catch (const std::exception& e) {
     PrintWarning(e.what());
   }
+}
+
+void CLInterface::PrintPath(std::string& path_str,
+                            const std::vector<int>& result) {
+  for (size_t i = 0; i < result.size(); ++i) {
+    path_str += std::to_string(result[i] + 1);
+    if (i < result.size() - 1) {
+      path_str += " -> ";
+    }
+  }
+  std::cout << path_str << "\n";
 }
 
 void CLInterface::MinimumSpanningTree() {
@@ -236,7 +240,7 @@ void CLInterface::ShortestPathBetweenAllVertices() {
   }
 }
 
-void CLInterface::PrintMatrix(std::vector<std::vector<int>>& matrix) {
+void CLInterface::PrintMatrix(const std::vector<std::vector<int>>& matrix) {
   std::cout << std::setw(3) << "   |";
   for (int i = 0; i < matrix.size(); ++i) {
     std::cout << std::setw(3) << i + 1 << "|";
@@ -284,9 +288,8 @@ void CLInterface::ShortestPathBetweenVertices() {
       return;
     }
     std::cout << "Длина кратчайшего пути: " << x << std::endl;
-    std::cout << "Путь: ";
-    for (auto elem : path) std::cout << elem + 1 << " ";
-    std::cout << std::endl;
+    std::string path_str = "";
+    PrintPath(path_str, path);
   } catch (std::exception& e) {
     PrintWarning(e.what());
   }
@@ -381,15 +384,15 @@ bool CLInterface::ValidateVertex(int vertex) const {
   return true;
 }
 
-void CLInterface::PrintInformation(const std::string msg) const {
+void CLInterface::PrintInformation(const std::string& msg) const {
   std::cout << COLOR_YELLOW << msg << COLOR_RESET << std::endl;
 }
 
-void CLInterface::PrintWarning(const std::string msg) const {
+void CLInterface::PrintWarning(const std::string& msg) const {
   std::cout << COLOR_RED << "<<< " << msg << " >>>" << COLOR_RESET << std::endl;
 }
 
-void CLInterface::PrintInput(const std::string msg) const {
+void CLInterface::PrintInput(const std::string& msg) const {
   std::cout << COLOR_GREEN << "<-- " << msg << " -->" << COLOR_RESET
             << std::endl;
 }

@@ -20,7 +20,8 @@ enum class GraphType {
   kUnweightedUndirected,  ///< Unweighted undirected graph.
   kUnweightedDirected,    ///< Unweighted directed graph.
   kWeightedUndirected,    ///< Weighted undirected graph.
-  kWeigtedDirected        ///< Weighted directed graph.
+  kWeigtedDirected,       ///< Weighted directed graph.
+  kUndefined              ///< Undefined type.
 };
 
 /**
@@ -32,6 +33,11 @@ enum class GraphType {
  */
 class s21_graph {
  public:
+  /**
+   * @brief Base constructor for s21_graph.
+   */
+  s21_graph() = default;
+
   /**
    * @brief Loads a graph from a file.
    *
@@ -87,8 +93,8 @@ class s21_graph {
   const int operator()(const int i, const int j) { return graph_[i][j]; }
 
  private:
-  GraphData graph_;       ///< The adjacency matrix representation of the graph.
-  GraphType graph_type_;  ///< The type of the graph.
+  GraphData graph_;  ///< The adjacency matrix representation of the graph.
+  GraphType graph_type_ = GraphType::kUndefined;  ///< The type of the graph.
 
   /**
    * @brief Parses the graph type from the loaded data.
