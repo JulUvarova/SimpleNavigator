@@ -134,7 +134,7 @@ check_fix:
 #########################################
 #---------------- Clean ----------------#
 #########################################
-clean: clean_coverage clean_dvi 
+clean: clean_coverage 
 	rm -f $(CONTAINERS_LIB) $(GRAPH_LIB) $(GRAPH_ALGORITHMS_LIB)
 	rm -f containers/*.o graph/*.o graph_algorithms/*.o cli/*.o
 	rm -f test_graph test_graph_algorithms $(PROJECT_NAME)
