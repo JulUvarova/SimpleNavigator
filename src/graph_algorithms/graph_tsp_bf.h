@@ -6,12 +6,39 @@
 #include "../graph/graph.h"
 #include "graph_algorithms.h"
 
+/**
+ * @brief Namespace for the Brute Force TSP optimizer.
+ */
 namespace s21_bf {
 
+/**
+ * @brief Solves the Traveling Salesman Problem using a Brute Force approach.
+ *
+ * This class explores all possible permutations of city visits to find the
+ * absolute shortest tour. It is guaranteed to find the optimal solution
+ * but is computationally expensive and only feasible for small graphs.
+ */
 class BruteForceOptimizer {
  public:
+  /**
+   * @brief Constructs a BruteForceOptimizer.
+   * @param graph A reference to the graph object to solve TSP for.
+   *              The graph should be complete and weighted for meaningful results.
+   */
   explicit BruteForceOptimizer(s21_graph& graph) : graph_(graph) {}
   
+  /**
+   * @brief Runs the Brute Force algorithm to find the optimal TSP tour.
+   *
+   * The algorithm generates all permutations of visiting vertices (starting from vertex 0),
+   * calculates the distance for each permutation, and returns the shortest one found.
+   *
+   * @return A TsmResult struct containing the optimal tour and its total distance.
+   *         If the graph has 0 vertices, an empty tour with infinite distance is returned (or 0 if n=1).
+   *         If the graph has 1 vertex, a tour {0, 0} with distance 0 is returned.
+   *         If any tour permutation involves an invalid (non-existent or zero-weight)
+   *         edge, that permutation is considered to have infinite distance.
+   */
   TsmResult Run() {
     TsmResult result;
     result.distance = std::numeric_limits<double>::infinity();
@@ -57,8 +84,17 @@ class BruteForceOptimizer {
   }
   
  private:
-  s21_graph& graph_;
+  s21_graph& graph_; ///< A reference to the graph being processed.
   
+  /**
+   * @brief Calculates the total distance of a given route (permutation of vertices).
+   *
+   * @param route A vector of vertex indices representing the tour. The tour is assumed
+   *              to start and end at the first vertex in its sequence, but the last vertex
+   *              in the input `route` vector must explicitly be the starting vertex to close the loop.
+   * @return The total distance of the route. Returns `std::numeric_limits<double>::infinity()`
+   *         if the route is invalid (e.g., contains a non-existent edge or an edge with non-positive weight).
+   */
   double CalculateRouteDistance(const std::vector<int>& route) {
     double distance = 0.0;
     

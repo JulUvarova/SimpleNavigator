@@ -6,12 +6,38 @@
 #include "../graph/graph.h"
 #include "graph_algorithms.h"
 
+/**
+ * @brief Namespace for the Nearest Neighbor TSP solver.
+ */
 namespace s21_nn {
 
+/**
+ * @brief Solves the Traveling Salesman Problem using the Nearest Neighbor heuristic.
+ *
+ * This class implements a greedy approach where the algorithm always chooses
+ * the closest unvisited city as the next city in the tour.
+ */
 class NearestNeighborSolver {
  public:
+  /**
+   * @brief Constructs a NearestNeighborSolver.
+   * @param graph A reference to the graph object to solve TSP for.
+   *              The graph should be complete and weighted for meaningful results.
+   */
   explicit NearestNeighborSolver(s21_graph& graph) : graph_(graph) {}
   
+  /**
+   * @brief Runs the Nearest Neighbor algorithm to find a TSP tour.
+   *
+   * The tour starts at vertex 0, visits each other vertex by always moving to the
+   * nearest unvisited neighbor, and finally returns to vertex 0.
+   *
+   * @return A TsmResult struct containing the constructed tour and its total distance.
+   *         If the graph has 0 vertices, an empty tour with distance 0 is returned.
+   *         If the graph has 1 vertex, a tour {0, 0} with distance 0 is returned.
+   *         If at any point no unvisited reachable neighbor is found (for disconnected graphs),
+   *         the tour might be incomplete and its validity depends on the graph structure.
+   */
   TsmResult Run() {
     TsmResult result;
     result.distance = 0.0;  // Explicitly reset distance to zero
@@ -62,8 +88,16 @@ class NearestNeighborSolver {
   }
   
  private:
-  s21_graph& graph_;
+  s21_graph& graph_; ///< A reference to the graph being processed.
   
+  /**
+   * @brief Finds the nearest unvisited neighbor to the current city.
+   *
+   * @param current The index of the current city.
+   * @param visited A boolean vector indicating which cities have already been visited.
+   * @return The index of the nearest unvisited neighbor. Returns -1 if no unvisited
+   *         neighbor is found or if all reachable neighbors have been visited.
+   */
   int FindNearestNeighbor(int current, const std::vector<bool>& visited) {
     int nearest = -1;
     int min_distance = std::numeric_limits<int>::max();
