@@ -1,10 +1,11 @@
 #include "graph_algorithms.h"
-#include "../utils/timer.h"
 
 #include <gtest/gtest.h>
 
 #include <filesystem>
 #include <fstream>
+
+#include "../utils/timer.h"
 
 TEST(GraphAlgorithmsTest, WrongInputedVertices) {
   s21_graph graph;
@@ -60,9 +61,8 @@ TEST(GraphAlgorithmsTest, ConnectedDirectedWeighted) {
   std::vector<int> expected_bfs{3, 0, 4, 1, 5, 2};
   std::vector<int> expected_dijkstra{3, 0, 1, 2};
   std::vector<std::vector<int>> expected_floyd_warshall{
-      {0, 5, 8, 0, 0, 12},    {0, 0, 3, 0, 0, 7},
-      {0, 0, 0, 0, 0, 4}, {2, 7, 10, 0, 7, 8},
-      {0, 0, 0, 0, 0, 1}, {0, 0, 0, 0, 0, 0}};
+      {0, 5, 8, 0, 0, 12}, {0, 0, 3, 0, 0, 7}, {0, 0, 0, 0, 0, 4},
+      {2, 7, 10, 0, 7, 8}, {0, 0, 0, 0, 0, 1}, {0, 0, 0, 0, 0, 0}};
 
   EXPECT_EQ(dfs.size(), 4);
   EXPECT_EQ(dfs, expected_dfs);
@@ -147,7 +147,7 @@ TEST(GraphAlgorithmsTest, ConnectedDirectedUnweighted) {
   std::vector<int> expected_bfs{1, 3, 4, 5, 2};
   std::vector<int> expected_dijkstra{0, 1, 3};
   std::vector<std::vector<int>> expected_floyd_warshall{
-      {0, 1, 1, 2, 2, 2},           {0, 0, 3, 1, 1, 2}, {0, 3, 0, 4, 2, 1},
+      {0, 1, 1, 2, 2, 2}, {0, 0, 3, 1, 1, 2}, {0, 3, 0, 4, 2, 1},
       {0, 0, 0, 0, 0, 0}, {0, 1, 2, 2, 0, 1}, {0, 2, 1, 3, 1, 0}};
 
   EXPECT_EQ(dfs.size(), 5);
@@ -233,9 +233,8 @@ TEST(GraphAlgorithmsTest, DisconnectedUndirectedWeighted) {
   std::vector<int> expected_bfs{4, 3};
   std::vector<int> expected_dijkstra{};
   std::vector<std::vector<int>> expected_floyd_warshall{
-      {0, 2, 4, 0, 0, 0},   {2, 0, 3, 0, 0, 0},
-      {4, 3, 0, 0, 0, 0},   {0, 0, 0, 0, 1, 0},
-      {0, 0, 0, 1, 0, 0}, {0, 0, 0, 0, 0, 0}};
+      {0, 2, 4, 0, 0, 0}, {2, 0, 3, 0, 0, 0}, {4, 3, 0, 0, 0, 0},
+      {0, 0, 0, 0, 1, 0}, {0, 0, 0, 1, 0, 0}, {0, 0, 0, 0, 0, 0}};
 
   EXPECT_EQ(dfs.size(), 2);
   EXPECT_EQ(dfs, expected_dfs);
@@ -263,9 +262,10 @@ TEST(TSPTest, ACO_incorrect_algorithm) {
             "0 0 0 0 1 0\n";
   }
   graph.LoadFromFile(filename);
-  std::filesystem::remove(filename);  
+  std::filesystem::remove(filename);
 
-  auto result = s21_graph_algorithms::SolveTravelingSalesmanProblem(graph, static_cast<TSPAlgorithm>(4));
+  auto result = s21_graph_algorithms::SolveTravelingSalesmanProblem(
+      graph, static_cast<TSPAlgorithm>(4));
   EXPECT_EQ(result.distance, std::numeric_limits<double>::infinity());
   EXPECT_EQ(result.vertices.size(), 0);
 }
@@ -281,7 +281,8 @@ TEST(TSPTest, ACO_trivial_graph) {
   graph.LoadFromFile(filename);
   std::filesystem::remove(filename);
 
-  auto result = s21_graph_algorithms::SolveTravelingSalesmanProblem(graph, TSPAlgorithm::ACO);
+  auto result = s21_graph_algorithms::SolveTravelingSalesmanProblem(
+      graph, TSPAlgorithm::ACO);
   EXPECT_EQ(result.distance, 0);
   EXPECT_EQ(result.vertices.size(), 2);
 }
@@ -302,7 +303,8 @@ TEST(TSPTest, ACO_non_connected_graph) {
   graph.LoadFromFile(filename);
   std::filesystem::remove(filename);
 
-  auto result = s21_graph_algorithms::SolveTravelingSalesmanProblem(graph, TSPAlgorithm::ACO);
+  auto result = s21_graph_algorithms::SolveTravelingSalesmanProblem(
+      graph, TSPAlgorithm::ACO);
   EXPECT_EQ(result.distance, std::numeric_limits<double>::infinity());
   EXPECT_EQ(result.vertices.size(), 0);
 }
@@ -315,15 +317,15 @@ TEST(TSPTest, ACO_connected_graph) {
     file << "0 1 2\n"
             "1 0 2\n"
             "2 2 0\n";
-  } 
+  }
   graph.LoadFromFile(filename);
   std::filesystem::remove(filename);
 
-  auto result = s21_graph_algorithms::SolveTravelingSalesmanProblem(graph, TSPAlgorithm::ACO);
+  auto result = s21_graph_algorithms::SolveTravelingSalesmanProblem(
+      graph, TSPAlgorithm::ACO);
   EXPECT_EQ(result.distance, 5);
   EXPECT_EQ(result.vertices.size(), 4);
 }
-
 
 TEST(TSPTest, NN_connected_graph) {
   s21_graph graph;
@@ -335,35 +337,31 @@ TEST(TSPTest, NN_connected_graph) {
             "2 2 0\n";
   }
   graph.LoadFromFile(filename);
-  std::filesystem::remove(filename);  
+  std::filesystem::remove(filename);
 
-  auto result = s21_graph_algorithms::SolveTravelingSalesmanProblem(graph, TSPAlgorithm::NEAREST_NEIGHBOR);
+  auto result = s21_graph_algorithms::SolveTravelingSalesmanProblem(
+      graph, TSPAlgorithm::NEAREST_NEIGHBOR);
   EXPECT_EQ(result.distance, 5);
   EXPECT_EQ(result.vertices.size(), 4);
-} 
-
+}
 
 TEST(TSPTest, BF_connected_graph) {
   s21_graph graph;
   std::string filename = "test_graph.txt";
   {
     std::ofstream file(filename);
-    file << "0 1 2\n" 
+    file << "0 1 2\n"
             "1 0 2\n"
             "2 2 0\n";
   }
   graph.LoadFromFile(filename);
-  std::filesystem::remove(filename);  
+  std::filesystem::remove(filename);
 
-  auto result = s21_graph_algorithms::SolveTravelingSalesmanProblem(graph, TSPAlgorithm::BRUTE_FORCE);
+  auto result = s21_graph_algorithms::SolveTravelingSalesmanProblem(
+      graph, TSPAlgorithm::BRUTE_FORCE);
   EXPECT_EQ(result.distance, 5);
   EXPECT_EQ(result.vertices.size(), 4);
 }
-
-
-
-
-
 
 int main(int argc, char** argv) {
   ::testing::InitGoogleTest(&argc, argv);

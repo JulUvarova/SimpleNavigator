@@ -115,7 +115,7 @@ TEST(GraphTest, ExportToDotUnweightedUndirectedGraph) {
   {
     std::ifstream dot_file(output_filename);
     content = std::string((std::istreambuf_iterator<char>(dot_file)),
-                        std::istreambuf_iterator<char>());
+                          std::istreambuf_iterator<char>());
   }  // File is closed here when the ifstream goes out of scope
 
   // Check for the expected content
@@ -155,7 +155,7 @@ TEST(GraphTest, ExportToDotWeightedUndirectedGraph) {
   {
     std::ifstream dot_file(output_filename);
     content = std::string((std::istreambuf_iterator<char>(dot_file)),
-                        std::istreambuf_iterator<char>());
+                          std::istreambuf_iterator<char>());
   }  // File is closed here when the ifstream goes out of scope
 
   // Check for the expected content
@@ -194,7 +194,7 @@ TEST(GraphTest, ExportToDotUnweightedDirectedGraph) {
   {
     std::ifstream dot_file(output_filename);
     content = std::string((std::istreambuf_iterator<char>(dot_file)),
-                        std::istreambuf_iterator<char>());
+                          std::istreambuf_iterator<char>());
   }  // File is closed here when the ifstream goes out of scope
 
   // Check for the expected content
@@ -233,7 +233,7 @@ TEST(GraphTest, ExportToDotWeightedDirectedGraph) {
   {
     std::ifstream dot_file(output_filename);
     content = std::string((std::istreambuf_iterator<char>(dot_file)),
-                        std::istreambuf_iterator<char>());
+                          std::istreambuf_iterator<char>());
   }  // File is closed here when the ifstream goes out of scope
 
   // Check for the expected content
@@ -256,7 +256,8 @@ TEST(GraphTest, ExportToDotNonWritableFileThrowsException) {
 
   s21_graph graph;
   std::string input_filename = "simple_graph.txt";
-  std::string output_filename = "/nonexistent/test.dot";  // Non-writable location
+  std::string output_filename =
+      "/nonexistent/test.dot";  // Non-writable location
 
   // Create a simple graph
   {
@@ -274,7 +275,9 @@ TEST(GraphTest, ExportToDotNonWritableFileThrowsException) {
         try {
           graph.ExportToDot(output_filename);
         } catch (const std::runtime_error& e) {
-          EXPECT_TRUE(std::string(e.what()).find("Unable to open file for writing") != std::string::npos);
+          EXPECT_TRUE(
+              std::string(e.what()).find("Unable to open file for writing") !=
+              std::string::npos);
           throw;
         }
       },

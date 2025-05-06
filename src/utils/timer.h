@@ -15,12 +15,16 @@ class Timer {
 
   static void Stop() {
     end_time_ = clock::now();
-    auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end_time_ - start_time_);
-    std::cout << "Timer stopped. Elapsed time: " << elapsed.count() << " ms" << std::endl;
+    auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(
+        end_time_ - start_time_);
+    std::cout << "Timer stopped. Elapsed time: " << elapsed.count() << " ms"
+              << std::endl;
   }
 
   static double GetElapsedTimeMs() {
-    return std::chrono::duration_cast<std::chrono::milliseconds>(end_time_ - start_time_).count();
+    return std::chrono::duration_cast<std::chrono::milliseconds>(end_time_ -
+                                                                 start_time_)
+        .count();
   }
 
  private:
@@ -29,4 +33,4 @@ class Timer {
   inline static clock::time_point end_time_ = clock::now();
 };
 
-}  // namespace s21 
+}  // namespace s21

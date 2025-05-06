@@ -163,7 +163,7 @@ s21_graph_algorithms::GetLeastSpanningTree(s21_graph& graph) {
 
   std::vector<int> key(graph.Size(), kIntMax);
   std::vector<bool> visited(graph.Size(), false);  // добавлено в дерево
-  std::vector<int> parents(graph.Size(), -1);      // с кем связаны вершины
+  std::vector<int> parents(graph.Size(), -1);  // с кем связаны вершины
 
   std::priority_queue<std::pair<int, int>, std::vector<std::pair<int, int>>,
                       std::greater<std::pair<int, int>>>

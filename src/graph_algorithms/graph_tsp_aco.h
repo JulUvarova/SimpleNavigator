@@ -1,12 +1,12 @@
 #pragma once
 
+#include <cmath>     // For pow, abs, isinf, isnan
+#include <iostream>  // For potential debugging output
+#include <limits>    // For numeric_limits
+#include <numeric>   // For std::accumulate
 #include <random>
-#include <vector>
-#include <cmath>      // For pow, abs, isinf, isnan
-#include <iostream>   // For potential debugging output
-#include <limits>     // For numeric_limits
-#include <numeric>    // For std::accumulate
 #include <stdexcept>  // For std::runtime_error
+#include <vector>
 
 #include "../graph/graph.h"
 #include "graph_algorithms.h"
@@ -17,32 +17,41 @@
 namespace s21_aco {
 
 /**
- * @brief Structure to hold parameters for the Ant Colony Optimization algorithm.
+ * @brief Structure to hold parameters for the Ant Colony Optimization
+ * algorithm.
  */
 struct AcoParams {
-  int num_ants = 10;              ///< Number of ants in the colony.
-  int num_iterations = 100;       ///< Number of iterations the algorithm will run.
-  double alpha = 1.0;             ///< Influence of pheromone trails (higher alpha means more pheromone influence).
-  double beta = 2.0;              ///< Influence of heuristic information (e.g., inverse of distance).
-  double evaporation_rate = 0.5;  ///< Rate at which pheromones evaporate (rho, between 0 and 1).
-  double Q = 100.0;               ///< Pheromone deposit factor (total amount of pheromone deposited by ants).
-  double initial_pheromone = 0.1; ///< Initial pheromone level on all paths.
+  int num_ants = 10;         ///< Number of ants in the colony.
+  int num_iterations = 100;  ///< Number of iterations the algorithm will run.
+  double alpha = 1.0;  ///< Influence of pheromone trails (higher alpha means
+                       ///< more pheromone influence).
+  double beta =
+      2.0;  ///< Influence of heuristic information (e.g., inverse of distance).
+  double evaporation_rate =
+      0.5;  ///< Rate at which pheromones evaporate (rho, between 0 and 1).
+  double Q = 100.0;  ///< Pheromone deposit factor (total amount of pheromone
+                     ///< deposited by ants).
+  double initial_pheromone = 0.1;  ///< Initial pheromone level on all paths.
 };
 
 /**
- * @brief Solves the Traveling Salesman Problem using the Ant Colony Optimization (ACO) metaheuristic.
+ * @brief Solves the Traveling Salesman Problem using the Ant Colony
+ * Optimization (ACO) metaheuristic.
  *
- * Ants construct tours by probabilistically choosing paths based on pheromone levels
- * and heuristic information (typically inverse distance). Pheromones are updated
- * after each iteration, reinforcing paths that are part of shorter tours.
+ * Ants construct tours by probabilistically choosing paths based on pheromone
+ * levels and heuristic information (typically inverse distance). Pheromones are
+ * updated after each iteration, reinforcing paths that are part of shorter
+ * tours.
  */
 class AntColonyOptimizer {
  public:
   /**
    * @brief Constructs an AntColonyOptimizer.
    * @param graph A reference to the graph object to solve TSP for.
-   *              The graph should ideally be complete and weighted for meaningful results.
-   * @param params ACO algorithm parameters. Defaults will be used if not provided.
+   *              The graph should ideally be complete and weighted for
+   * meaningful results.
+   * @param params ACO algorithm parameters. Defaults will be used if not
+   * provided.
    * @throw std::invalid_argument if the graph contains no cities (vertices).
    */
   AntColonyOptimizer(s21_graph& graph, const AcoParams& params = AcoParams())
@@ -63,9 +72,10 @@ class AntColonyOptimizer {
    * The best tour found across all ants and iterations is returned.
    *
    * @return A TsmResult struct containing the best tour found and its distance.
-   *         The tour in TsmResult will have the starting node appended at the end to represent a full cycle.
-   * @throw std::runtime_error if ACO fails to find any valid tour (e.g., in a disconnected graph
-   *         where ants cannot complete a tour of all cities).
+   *         The tour in TsmResult will have the starting node appended at the
+   * end to represent a full cycle.
+   * @throw std::runtime_error if ACO fails to find any valid tour (e.g., in a
+   * disconnected graph where ants cannot complete a tour of all cities).
    */
   TsmResult Run() {
     TsmResult best_result;
@@ -98,7 +108,8 @@ class AntColonyOptimizer {
       throw std::runtime_error("ACO could not find a valid tour.");
     }
 
-    // Add the starting node to the end to represent the full cycle for TsmResult
+    // Add the starting node to the end to represent the full cycle for
+    // TsmResult
     if (!best_result.vertices.empty()) {
       best_result.vertices.push_back(best_result.vertices.front());
     }
@@ -107,23 +118,28 @@ class AntColonyOptimizer {
   }
 
  private:
-  s21_graph& graph_;                          ///< Reference to the graph.
-  const AcoParams params_;                    ///< ACO parameters.
-  int num_cities_;                            ///< Number of cities (vertices) in the graph.
-  std::vector<std::vector<double>> pheromones_; ///< Matrix storing pheromone levels between cities.
-  std::vector<std::vector<double>> heuristic_info_; ///< Matrix storing heuristic information (e.g., 1/distance).
-  std::mt19937 random_generator_;             ///< Random number generator for probabilistic choices.
+  s21_graph& graph_;        ///< Reference to the graph.
+  const AcoParams params_;  ///< ACO parameters.
+  int num_cities_;          ///< Number of cities (vertices) in the graph.
+  std::vector<std::vector<double>>
+      pheromones_;  ///< Matrix storing pheromone levels between cities.
+  std::vector<std::vector<double>>
+      heuristic_info_;  ///< Matrix storing heuristic information (e.g.,
+                        ///< 1/distance).
+  std::mt19937 random_generator_;  ///< Random number generator for
+                                   ///< probabilistic choices.
 
   /**
    * @brief Initializes pheromone trails and heuristic information.
    *
-   * Pheromones are set to an initial value. Heuristic information is calculated typically
-   * as the inverse of the distance between cities. Handles cases for non-existent edges
-   * or self-loops.
+   * Pheromones are set to an initial value. Heuristic information is calculated
+   * typically as the inverse of the distance between cities. Handles cases for
+   * non-existent edges or self-loops.
    */
   void Initialize() {
     pheromones_.assign(
-        num_cities_, std::vector<double>(num_cities_, params_.initial_pheromone));
+        num_cities_,
+        std::vector<double>(num_cities_, params_.initial_pheromone));
     heuristic_info_.assign(num_cities_, std::vector<double>(num_cities_, 0.0));
 
     for (int i = 0; i < num_cities_; ++i) {
@@ -151,13 +167,14 @@ class AntColonyOptimizer {
   /**
    * @brief Constructs a tour for a single ant.
    *
-   * The ant starts at a random city and iteratively chooses the next city based on
-   * pheromone levels and heuristic information until all cities are visited.
+   * The ant starts at a random city and iteratively chooses the next city based
+   * on pheromone levels and heuristic information until all cities are visited.
    *
-   * @return A vector of city indices representing the tour constructed by the ant.
-   *         The tour does NOT include the return to the start city here; that's handled
-   *         by CalculateTourLength and the final TsmResult.
-   *         Returns an empty vector if the ant gets stuck (should not happen in a fully connected graph).
+   * @return A vector of city indices representing the tour constructed by the
+   * ant. The tour does NOT include the return to the start city here; that's
+   * handled by CalculateTourLength and the final TsmResult. Returns an empty
+   * vector if the ant gets stuck (should not happen in a fully connected
+   * graph).
    */
   std::vector<int> ConstructTourForAnt() {
     std::vector<int> tour;
@@ -185,20 +202,24 @@ class AntColonyOptimizer {
   }
 
   /**
-   * @brief Updates pheromone trails after all ants have completed their tours in an iteration.
+   * @brief Updates pheromone trails after all ants have completed their tours
+   * in an iteration.
    *
-   * Pheromones evaporate on all paths, and then ants deposit new pheromones on the
-   * paths they traversed, proportional to the quality (inverse length) of their tours.
+   * Pheromones evaporate on all paths, and then ants deposit new pheromones on
+   * the paths they traversed, proportional to the quality (inverse length) of
+   * their tours.
    *
-   * @param ant_tours A vector of tours, where each tour is a vector of city indices.
-   * @param ant_tour_lengths A vector of corresponding lengths for each tour in ant_tours.
+   * @param ant_tours A vector of tours, where each tour is a vector of city
+   * indices.
+   * @param ant_tour_lengths A vector of corresponding lengths for each tour in
+   * ant_tours.
    */
   void UpdatePheromones(const std::vector<std::vector<int>>& ant_tours,
                         const std::vector<double>& ant_tour_lengths) {
     // 1. Evaporation
     for (int i = 0; i < num_cities_; ++i) {
       for (int j = i + 1; j < num_cities_;
-          ++j) {  // Iterate only upper triangle for symmetric TSP
+           ++j) {  // Iterate only upper triangle for symmetric TSP
         pheromones_[i][j] *= (1.0 - params_.evaporation_rate);
         pheromones_[j][i] = pheromones_[i][j];
       }
@@ -237,11 +258,13 @@ class AntColonyOptimizer {
    * @brief Calculates the total length of a given tour.
    *
    * The tour is a sequence of cities. This function sums the distances between
-   * consecutive cities in the tour and adds the distance from the last city back to the first.
+   * consecutive cities in the tour and adds the distance from the last city
+   * back to the first.
    *
    * @param tour A vector of city indices representing the tour.
-   * @return The total length of the tour. Returns `std::numeric_limits<double>::infinity()`
-   *         if the tour is invalid (e.g., less than 2 cities, or contains an invalid edge).
+   * @return The total length of the tour. Returns
+   * `std::numeric_limits<double>::infinity()` if the tour is invalid (e.g.,
+   * less than 2 cities, or contains an invalid edge).
    */
   double CalculateTourLength(const std::vector<int>& tour) const {
     double length = 0.0;
@@ -265,15 +288,18 @@ class AntColonyOptimizer {
   }
 
   /**
-   * @brief Selects the next city for an ant based on pheromone and heuristic information.
+   * @brief Selects the next city for an ant based on pheromone and heuristic
+   * information.
    *
-   * Uses a probabilistic selection rule (roulette wheel selection) where cities with
-   * higher pheromone levels and better heuristic values (shorter distances) are more likely
-   * to be chosen.
+   * Uses a probabilistic selection rule (roulette wheel selection) where cities
+   * with higher pheromone levels and better heuristic values (shorter
+   * distances) are more likely to be chosen.
    *
    * @param current_city The city the ant is currently at.
-   * @param visited A boolean vector indicating which cities have already been visited by this ant.
-   * @return The index of the next city to visit. Returns -1 if no unvisited city can be reached.
+   * @param visited A boolean vector indicating which cities have already been
+   * visited by this ant.
+   * @return The index of the next city to visit. Returns -1 if no unvisited
+   * city can be reached.
    */
   int SelectNextCity(int current_city, const std::vector<bool>& visited) {
     double total_attractiveness = 0.0;
