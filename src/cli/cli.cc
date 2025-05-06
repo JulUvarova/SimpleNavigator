@@ -34,10 +34,10 @@ void CLInterface::Loop() {
         SalesmanProblemAnalysis();
         break;
       case 0:
-        PrintInformation("Завершение программы");
+        PrintInformation("Exiting the program");
         break;
       default:
-        PrintWarning("Неверная команда");
+        PrintWarning("Invalid command");
         break;
     }
   } while (choice != 0);
@@ -53,10 +53,6 @@ void CLInterface::SalesmanProblemAnalysis() {
 
   try {
     int kIterations = 10;
-    std::cout << "СРАВНИТЬ АЛГОРИТМЫ РЕШЕНИЯ КОММИВОЯЖЕРА" << std::endl;
-    if (kIterations <= 0) {
-      throw std::invalid_argument("Number of Iterations must be positive");
-    }
 
     std::cout << "Analyzing TSP algorithms for " << kIterations
               << " iterations..." << std::endl;
@@ -175,7 +171,7 @@ void CLInterface::SalesmanProblem() {
   if (!CheckGraph()) return;
 
   try {
-    PrintInformation("МУРАВЬИНЫЙ АЛГОРИТМ");
+    std::cout << "Working time for ant colony algorithm:" << std::endl;
     s21::Timer::Start();
     TsmResult result = s21_graph_algorithms::SolveTravelingSalesmanProblem(
         graph_, TSPAlgorithm::ACO);
@@ -184,13 +180,14 @@ void CLInterface::SalesmanProblem() {
     // Print the result
     if (result.distance != std::numeric_limits<double>::infinity() &&
         !result.vertices.empty()) {
-      PrintInformation("Найденный маршрут (муравьиный алгоритм):");
+      std::cout << "Found route (ant colony algorithm):" << std::endl;
       std::string path_str = "";
       PrintPath(path_str, result.vertices);
-      PrintInformation("Длина маршрута: " +
-                       std::to_string(static_cast<int>(result.distance)));
+      std::cout << "Route length: " +
+                       std::to_string(static_cast<int>(result.distance))
+                << std::endl;
     } else {
-      PrintWarning("Не удалось найти допустимый маршрут коммивояжера.");
+      PrintWarning("Failed to find a valid traveling salesman route.");
     }
 
   } catch (const std::exception& e) {
@@ -215,10 +212,10 @@ void CLInterface::MinimumSpanningTree() {
   try {
     auto res = s21_graph_algorithms::GetLeastSpanningTree(graph_);
 
-    std::cout << "Матрица смежности для минимального остовного дерева:"
+    std::cout << "Adjacency matrix for the minimum spanning tree: "
               << std::endl;
     PrintMatrix(res.second);
-    std::cout << "Вес минимального остовного дерева: " << res.first
+    std::cout << "Weight of the minimum spanning tree: " << res.first
               << std::endl;
   } catch (std::exception& e) {
     PrintWarning(e.what());
@@ -232,7 +229,7 @@ void CLInterface::ShortestPathBetweenAllVertices() {
     std::vector<std::vector<int>> res =
         s21_graph_algorithms::GetShortestPathsBetweenAllVertices(graph_);
 
-    std::cout << "Матрица расстояний с кратчайшими путями между вершинами:"
+    std::cout << "Distance matrix with shortest paths between all vertices: "
               << std::endl;
     PrintMatrix(res);
   } catch (std::exception& e) {
@@ -269,12 +266,12 @@ void CLInterface::ShortestPathBetweenVertices() {
 
   int src, dest;
 
-  PrintInput("Введите начальную вершину:");
+  PrintInput("Enter the starting vertex:");
   if (!(std::cin >> src)) src = -1;
   CleanInput();
   if (!ValidateVertex(src)) return;
 
-  PrintInput("Введите конечную вершину:");
+  PrintInput("Enter the destination vertex:");
   if (!(std::cin >> dest)) dest = -1;
   CleanInput();
   if (!ValidateVertex(dest)) return;
@@ -283,11 +280,11 @@ void CLInterface::ShortestPathBetweenVertices() {
     auto [x, path] = s21_graph_algorithms::GetShortestPathBetweenVertices(
         graph_, src - 1, dest - 1);
     if (x == -1) {
-      std::cout << "Пути между вершинами " << src << " и " << dest
-                << " не существует" << std::endl;
+      std::cout << "Path between vertices " << src << " and " << dest
+                << " does not exist" << std::endl;
       return;
     }
-    std::cout << "Длина кратчайшего пути: " << x << std::endl;
+    std::cout << "The smallest distance: " << x << std::endl;
     std::string path_str = "";
     PrintPath(path_str, path);
   } catch (std::exception& e) {
@@ -299,7 +296,7 @@ void CLInterface::DFS() {
   if (!CheckGraph()) return;
 
   int start;
-  PrintInput("Введите стартовую вершину:");
+  PrintInput("Enter the starting vertex:");
   if (!(std::cin >> start)) start = -1;
   CleanInput();
   if (!ValidateVertex(start)) return;
@@ -317,7 +314,7 @@ void CLInterface::BFS() {
   if (!CheckGraph()) return;
 
   int start;
-  PrintInput("Введите стартовую вершину:");
+  PrintInput("Enter the starting vertex:");
   if (!(std::cin >> start)) start = -1;
   CleanInput();
   if (!ValidateVertex(start)) return;
@@ -333,7 +330,7 @@ void CLInterface::BFS() {
 
 void CLInterface::LoadGraphFromFile() {
   std::string filename;
-  PrintInput("Введите название файла:");
+  PrintInput("Enter the filename:");
   std::cin >> filename;
   // filename.trim();
   try {
@@ -341,7 +338,7 @@ void CLInterface::LoadGraphFromFile() {
     new_graph.LoadFromFile(filename);
     graph_ = std::move(new_graph);
     is_graph_loaded_ = true;
-    PrintInput("Граф успешно загружен");
+    PrintInput("Graph loaded successfully");
     graph_.PrintGraph();
 
     std::string dot_filename = filename + ".dot";
@@ -354,23 +351,23 @@ void CLInterface::LoadGraphFromFile() {
 
 void CLInterface::PrintMenu() const {
   PrintInformation(
-      "\n<<< SIMPLE NAVIGATOR MENU: >>>\n1. Загрузить граф из файла\n2. "
-      "Обход графа в ширину\n3. Обход графа в глубину\n4. Кратчайший путь "
-      "между двумя вершинами\n5. Кратчайший путь между всеми парами "
-      "вершин\n6. Минимальное остовное дерево\n7. Решение задачи "
-      "коммивояжера муравьиным алгоритмом\n8. Bonus: Анализ решения задачи "
-      "коммивояжера разными алгоритмами\n0. Выход");
-  PrintInput("Ваш выбор:");
+      "\n<<< SIMPLE NAVIGATOR MENU: >>>\n1. Load graph from file\n2. "
+      "Breadth-first search\n3. Depth-first search\n4. Shortest path between "
+      "two vertices\n5. Shortest paths between all pairs of vertices\n6. "
+      "Minimum spanning tree\n7. Solve traveling salesman problem using ant "
+      "colony algorithm\n8. Bonus: Analyze TSP solutions with different "
+      "algorithms\n0. Exit");
+  PrintInput("Your choice:");
 }
 
 bool CLInterface::CheckGraph() const {
   if (!is_graph_loaded_) {
-    PrintWarning("Сначала загрузите граф");
+    PrintWarning("Please load the graph first");
     return false;
   }
 
   if (graph_.Size() == 0) {
-    PrintWarning("Граф пуст");
+    PrintWarning("The graph is empty");
     return false;
   }
   return true;
@@ -378,7 +375,7 @@ bool CLInterface::CheckGraph() const {
 
 bool CLInterface::ValidateVertex(int vertex) const {
   if (vertex < 1 || vertex > graph_.Size()) {
-    PrintWarning("Неверный номер вершины");
+    PrintWarning("Invalid vertex number");
     return false;
   }
   return true;

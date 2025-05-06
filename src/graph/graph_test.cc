@@ -17,7 +17,7 @@ TEST(GraphTest, LoadEmptyFileThrowsException) {
           graph.LoadFromFile(filename);
         } catch (const std::logic_error& e) {
           EXPECT_STREQ(e.what(),
-                       "Файл пуст или содержит только пустые строки!");
+                       "The file is empty or contains only empty lines!");
           throw;
         }
       },
@@ -35,7 +35,7 @@ TEST(GraphTest, LoadNonExistentFileThrowsException) {
           std::string fn = "non_existent_file.txt";
           graph.LoadFromFile(fn);
         } catch (const std::logic_error& e) {
-          EXPECT_STREQ(e.what(), "Не удалось открыть файл!");
+          EXPECT_STREQ(e.what(), "Failed to open the file!");
           throw;
         }
       },
@@ -57,7 +57,7 @@ TEST(GraphTest, LoadNonSquareMatrixThrowsException) {
         try {
           graph.LoadFromFile(filename);
         } catch (const std::logic_error& e) {
-          EXPECT_STREQ(e.what(), "Граф не является квадратной матрицей!");
+          EXPECT_STREQ(e.what(), "The graph is not a square matrix!");
           throw;
         }
       },
@@ -81,7 +81,7 @@ TEST(GraphTest, LoadMatrixWithNegativeEdgeThrowsException) {
         try {
           graph.LoadFromFile(filename);
         } catch (const std::logic_error& e) {
-          EXPECT_STREQ(e.what(), "Вес ребра не может быть отрицательным!");
+          EXPECT_STREQ(e.what(), "Edge weight cannot be negative!");
           throw;
         }
       },

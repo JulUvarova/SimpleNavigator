@@ -153,9 +153,8 @@ s21_graph_algorithms::GetLeastSpanningTree(s21_graph& graph) {
   if (graph.GetType() != GraphType::kWeightedUndirected ||
       BreadthFirstSearch(graph, 0).size() != graph.Size()) {
     throw std::invalid_argument(
-        "Алгоритм Прима применим только к связанным взвешенным "
-        "неориентированным "
-        "графам!");
+        "Prim's algorithm is only applicable to connected, weighted, "
+        "undirected graphs!");
   }
   std::vector<std::vector<int>> res(graph.Size(),
                                     std::vector<int>(graph.Size(), 0));

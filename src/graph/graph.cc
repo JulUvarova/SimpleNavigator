@@ -4,7 +4,7 @@ void s21_graph::LoadFromFile(std::string& filename) {
   // loading a graph from a file in the adjacency matrix format.
   std::ifstream file(filename);
   if (!file.is_open()) {
-    throw std::logic_error("Не удалось открыть файл!");
+    throw std::logic_error("Failed to open the file!");
   }
   std::string line;
   while (std::getline(file, line)) {
@@ -17,7 +17,7 @@ void s21_graph::LoadFromFile(std::string& filename) {
       }
       int value = std::stoi(cell);
       if (value < 0) {
-        throw std::logic_error("Вес ребра не может быть отрицательным!");
+        throw std::logic_error("Edge weight cannot be negative!");
       }
       row.push_back(value);
     }
@@ -26,11 +26,11 @@ void s21_graph::LoadFromFile(std::string& filename) {
   file.close();
 
   if (graph_.empty()) {
-    throw std::logic_error("Файл пуст или содержит только пустые строки!");
+    throw std::logic_error("The file is empty or contains only empty lines!");
   }
 
   if (graph_.size() != graph_[0].size()) {
-    throw std::logic_error("Граф не является квадратной матрицей!");
+    throw std::logic_error("The graph is not a square matrix!");
   }
 
   ParseType();
@@ -111,23 +111,23 @@ void s21_graph::ParseType() {
 GraphType s21_graph::GetType() const { return graph_type_; }
 
 void s21_graph::PrintGraph() const {
-  std::cout << "Тип графа: ";
+  std::cout << "Graph type: ";
   switch (graph_type_) {
     case GraphType::kUnweightedUndirected:
-      std::cout << "Неориентированный, невзвешенный";
+      std::cout << "Undirected, unweighted";
       break;
     case GraphType::kUnweightedDirected:
-      std::cout << "Ориентированный, невзвешенный";
+      std::cout << "Directed, unweighted";
       break;
     case GraphType::kWeightedUndirected:
-      std::cout << "Неориентированный, взвешенный";
+      std::cout << "Undirected, weighted";
       break;
     case GraphType::kWeigtedDirected:
-      std::cout << "Ориентированный, взвешенный";
+      std::cout << "Directed, weighted";
       break;
   }
   std::cout << std::endl;
-  std::cout << "Граф:" << std::endl;
+  std::cout << "Graph:" << std::endl;
   for (const auto& row : graph_) {
     for (const auto& cell : row) {
       std::cout << cell << " ";
